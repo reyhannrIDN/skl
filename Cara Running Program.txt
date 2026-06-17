@@ -1,2 +1,134 @@
-1. source .venv/bin/activate
-2. python3 anpr.pys
+===============================================
+  CARA RUNNING PROGRAM SKLIDN
+  (Backend Laravel + Frontend React Vite)
+===============================================
+
+PRASYARAT (Install dulu jika belum ada):
+- PHP >= 8.2
+- Composer (https://getcomposer.org)
+- Node.js >= 18 + npm (https://nodejs.org)
+- MySQL (bisa pakai Laragon/XAMPP)
+- Git
+
+===============================================
+LANGKAH 1: SETUP DATABASE
+===============================================
+
+1. Buka phpMyAdmin atau MySQL CLI
+2. Buat database baru:
+   CREATE DATABASE sklidn;
+3. Import file SQL:
+   - Buka phpMyAdmin → pilih database "sklidn" → tab Import → pilih file "sklidn.sql"
+   - ATAU via CLI:
+     mysql -u root -p sklidn < sklidn.sql
+
+===============================================
+LANGKAH 2: SETUP BACKEND (Laravel)
+===============================================
+
+1. Buka terminal, masuk ke folder backend:
+   cd backend
+
+2. Install dependencies PHP:
+   composer install
+
+3. Copy file environment:
+   copy .env.example .env
+   (Jika sudah ada file .env, skip langkah ini)
+
+4. Edit file .env, sesuaikan konfigurasi database:
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=sklidn
+   DB_USERNAME=root
+   DB_PASSWORD=
+
+5. Generate application key:
+   php artisan key:generate
+
+6. Jalankan migrasi database (opsional jika sudah import SQL):
+   php artisan migrate
+
+7. Buat symbolic link untuk storage:
+   php artisan storage:link
+
+8. Jalankan backend server:
+   php artisan serve
+
+   Backend akan jalan di: http://127.0.0.1:8000
+
+===============================================
+LANGKAH 3: SETUP FRONTEND (React + Vite)
+===============================================
+
+1. Buka terminal BARU (jangan tutup terminal backend), masuk ke folder frontend:
+   cd frontend
+
+2. Install dependencies Node.js:
+   npm install
+
+3. Copy file environment:
+   copy .env.example .env
+
+4. Pastikan isi .env frontend sudah benar:
+   VITE_API_BASE_URL=http://127.0.0.1:8000/api
+   VITE_STORAGE_BASE_URL=http://127.0.0.1:8000/storage
+
+5. Jalankan frontend dev server:
+   npm run dev
+
+   Frontend akan jalan di: http://127.0.0.1:5173
+
+===============================================
+LANGKAH 4: BUKA APLIKASI
+===============================================
+
+1. Buka browser
+2. Akses: http://127.0.0.1:5173
+3. Login sesuai role:
+   - Superadmin
+   - Guru
+   - Siswa
+
+===============================================
+CATATAN PENTING
+===============================================
+
+- Backend dan Frontend harus jalan BERSAMAAN (2 terminal terpisah)
+- Jika pakai Laragon, MySQL sudah otomatis jalan
+- Jika port 8000 atau 5173 sudah dipakai, ganti di konfigurasi
+- Untuk production build frontend: npm run build (di folder frontend)
+- File .env TIDAK boleh di-share/upload ke Git (berisi credential)
+
+===============================================
+AUTO START (Paling Mudah - 1 Klik!)
+===============================================
+
+Cukup double-click file berikut:
+
+  start.bat    → Jalankan backend + frontend + buka browser otomatis
+  stop.bat     → Hentikan semua service
+
+Script start.bat akan otomatis:
+  1. Cek apakah PHP dan Node.js sudah terinstall
+  2. Install dependencies (composer install / npm install) jika belum
+  3. Jalankan backend Laravel di http://127.0.0.1:8000
+  4. Jalankan frontend Vite di http://127.0.0.1:5173
+  5. Buka browser otomatis
+
+===============================================
+QUICK START MANUAL (Ringkasan Cepat)
+===============================================
+
+Terminal 1 (Backend):
+  cd backend
+  composer install
+  php artisan serve
+
+Terminal 2 (Frontend):
+  cd frontend
+  npm install
+  npm run dev
+
+Buka browser: http://127.0.0.1:5173

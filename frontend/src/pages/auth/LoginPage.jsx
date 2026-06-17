@@ -100,6 +100,7 @@ export function LoginPage() {
     setIsLoading(true);
     clearMsgs();
     try {
+      await authApi.getCsrfCookie();
       // With useGoogleLogin, we get an access_token, not a GSI credential string by default
       // Unless we use 'auth-code' flow. Let's use the simplest flow.
       const response = await authApi.googleLogin({ 
