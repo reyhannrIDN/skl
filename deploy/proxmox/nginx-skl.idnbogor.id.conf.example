@@ -1,0 +1,66 @@
+# ── Konfigurasi Nginx untuk SKLIDN ─────────────────────────
+# Ganti "skl.idnbogor.id" dengan IP server jika tidak pakai domain.
+# File ini di-generate otomatis oleh setup-autostart.sh,
+# manual copy ke: /etc/nginx/sites-available/sklidn
+# lalu:
+#   nginx -t && systemctl reload nginx
+
+server {
+    listen 80;
+    # Ganti dengan domain atau IP server Anda:
+    server_name skl.idnbogor.id;
+    # server_name 192.168.1.100;  # contoh: pakai IP saja
+
+    # Frontend (React/Vite build output)
+    root /var/www/SKLIDN/frontend/dist;
+    index index.html;
+
+    # ── WAJIB: COOP header agar Google OAuth popup bisa bekerja ───
+    # SecurityHeaders.php middleware di Laravel hanya berlaku untuk PHP responses.
+    # Static index.html dilayani langsung oleh Nginx (tanpa PHP), sehingga header
+    # Cross-Origin-Opener-Policy HARUS diset di sini agar window.closed tidak diblokir.
+    add_header Cross-Origin-Opener-Policy  "same-origin-allow-popups" always;
+    add_header Cross-Origin-Embedder-Policy "unsafe-none"             always;
+
+    # Header keamanan umum
+    add_header X-Content-Type-Options "nosniff"        always;
+    add_header X-Frame-Options        "SAMEORIGIN"     always;
+    add_header X-XSS-Protection       "1; mode=block"  always;
+
+    # ── Frontend SPA ───────────────────────────────────────────────
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # ── Storage file Laravel ───────────────────────────────────────
+    location /storage/ {
+        alias /var/www/SKLIDN/backend/public/storage/;
+        access_log off;
+        expires 30d;
+        add_header Cache-Control "public";
+    }
+
+    # ── API & Sanctum → PHP-FPM (langsung, tanpa try_files) ──────
+    # Menggunakan regex location dan fastcgi_pass langsung ke index.php.
+    # Pendekatan try_files $uri /index.php?$query_string rentan kehilangan
+    # REQUEST_URI asli setelah internal redirect → menyebabkan 404 dari Laravel.
+    location ~ ^/(api|sanctum)(/.*)?$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        # Selalu arahkan ke Laravel index.php
+        fastcgi_param SCRIPT_FILENAME /var/www/SKLIDN/backend/public/index.php;
+        fastcgi_param DOCUMENT_ROOT   /var/www/SKLIDN/backend/public;
+        # Kirim URI asli agar Laravel routing bekerja dengan benar
+        fastcgi_param REQUEST_URI     $request_uri;
+        fastcgi_read_timeout 300;
+    }
+
+    # ── Blok akses ke file sensitif ────────────────────────────────
+    location ~ /\.(env|git|htaccess) {
+        deny all;
+    }
+
+    client_max_body_size 32M;
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
+}
