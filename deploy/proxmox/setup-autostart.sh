@@ -117,7 +117,8 @@ if [[ "$SKIP_BUILD" != "1" ]]; then
       php${PHP_VER} php${PHP_VER}-fpm php${PHP_VER}-cli php${PHP_VER}-mysql \
       php${PHP_VER}-redis php${PHP_VER}-xml php${PHP_VER}-mbstring \
       php${PHP_VER}-curl php${PHP_VER}-zip php${PHP_VER}-bcmath \
-      php${PHP_VER}-tokenizer php${PHP_VER}-fileinfo php${PHP_VER}-intl
+      php${PHP_VER}-tokenizer php${PHP_VER}-fileinfo php${PHP_VER}-intl \
+      php${PHP_VER}-gd
   else
     log "PHP $PHP_VER sudah terinstal"
     # Pastikan libapache2-mod-php TIDAK terinstal bersamaan dengan FPM

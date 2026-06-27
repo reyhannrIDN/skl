@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
     {
         // Superadmin
         User::create([
-            'name' => 'Admin SKL',
+            'name' => 'Admin IPSA',
             'email' => 'admin@skl.test',
             'password' => 'password',
             'role' => 'superadmin',
@@ -54,6 +54,15 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
             ]));
         }
+
+        // IDN Admin
+        User::create([
+            'name' => 'Admin IDN',
+            'email' => 'admin@idnbogor.id',
+            'password' => 'password',
+            'role' => 'idn',
+            'is_active' => true,
+        ]);
 
         // Call other seeders
         $this->call([

@@ -77,7 +77,7 @@ export default function SiswaProjectList() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div className="space-y-3">
           <Badge variant="outline" className="text-indigo-600 dark:text-indigo-400 border-indigo-500/20 bg-indigo-500/5 px-4 py-1.5 font-bold uppercase tracking-[0.2em] text-[10px] rounded-full">
-             <FontAwesomeIcon icon={faLaptopCode} className="mr-2" /> Sertifikasi SKL IDN
+             <FontAwesomeIcon icon={faLaptopCode} className="mr-2" /> Sertifikasi IPSA
           </Badge>
           <h1 className="text-4xl lg:text-5xl font-black font-display tracking-tight text-slate-900 dark:text-white leading-tight">
             Tugas <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Project Saya</span>

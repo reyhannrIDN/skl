@@ -91,8 +91,8 @@ export function LandingPage() {
               <GraduationCap className="w-6 h-6 text-white relative z-10 group-hover:scale-110 transition-transform" />
             </div>
             <div className="flex flex-col leading-none">
-              <span className="font-serif font-bold text-lg tracking-tight text-white group-hover:text-blue-300 transition-colors">SKL</span>
-              <span className="font-serif font-bold text-xs bg-gradient-to-r from-blue-400 via-cyan-400 to-amber-400 bg-clip-text text-transparent">IDN</span>
+              <span className="font-serif font-bold text-lg tracking-tight text-white group-hover:text-blue-300 transition-colors">IPSA</span>
+              <span className="text-[8px] uppercase tracking-[0.2em] font-bold text-blue-200/60">IDN Pamijahan Super Apps</span>
             </div>
           </div>
 
@@ -143,7 +143,7 @@ export function LandingPage() {
 
           {/* Main Heading */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-white max-w-5xl leading-[1.05] mb-8 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-100 tracking-tight">
-            Sistem Kelulusan <br className="hidden md:block"/>
+            IDN Pamijahan Super Apps <br className="hidden md:block"/>
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-amber-400 bg-clip-text text-transparent">Sekolah IDN</span>
               <span className="absolute -bottom-3 left-0 right-0 h-1 bg-gradient-to-r from-blue-400/50 via-cyan-400 to-blue-400/50 blur-sm mx-auto w-3/4"></span>
@@ -442,7 +442,10 @@ export function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-cyan-400 to-amber-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
                   <School className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-serif font-bold text-xl text-white">SKL IDN</span>
+                <div>
+                  <span className="font-serif font-bold text-xl text-white">IPSA</span>
+                  <div className="text-[9px] uppercase tracking-[0.2em] font-bold text-slate-400/60 mt-0.5">IDN Pamijahan Super Apps</div>
+                </div>
               </div>
               <p className="text-slate-400 leading-relaxed max-w-xs mb-8 text-[15px]">
                 Platform verifikasi kelulusan digital modern yang membangun kepercayaan antara sekolah dan siswa melalui teknologi blockchain.
@@ -500,7 +503,7 @@ export function LandingPage() {
 
           {/* Bottom */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400 font-medium">
-            <p>© 2026 SKL Digital. Semua hak dilindungi. Dikembangkan dengan passion untuk pendidikan Indonesia.</p>
+            <p>© 2026 IPSA. Semua hak dilindungi. Dikembangkan dengan passion untuk pendidikan Indonesia.</p>
             <div className="flex gap-8">
               <a href="#" className="hover:text-blue-400 transition-colors">Kebijakan Privasi</a>
               <a href="#" className="hover:text-blue-400 transition-colors">Syarat & Ketentuan</a>

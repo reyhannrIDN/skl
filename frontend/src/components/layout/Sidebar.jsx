@@ -17,7 +17,12 @@ import {
   faChartPie,
   faSignOutAlt,
   faUserCircle,
-  faChevronRight
+  faChevronRight,
+  faCommentDots,
+  faArchive,
+  faDollarSign,
+  faUserShield,
+  faTrophy
 } from '@fortawesome/free-solid-svg-icons';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { Button } from '../common/Button';
@@ -26,32 +31,72 @@ export function Sidebar({ isOpen, closeSidebar }) {
   const { user, logout } = useAuthStore();
   const location = useLocation();
 
+  const filterLinks = (links) => {
+    const perms = user?.permissions;
+    if (!perms || Object.keys(perms).length === 0) return links;
+    return links.filter(l => !l.module || perms[l.module]?.includes('view'));
+  };
+
   const getLinks = () => {
     switch (user?.role) {
       case 'superadmin':
         return [
           { name: 'Dashboard', path: '/admin/dashboard', icon: faChartLine },
           { name: 'Users', path: '/admin/users', icon: faUsers },
+          { name: 'Permissions', path: '/admin/permissions', icon: faUserShield },
           { name: 'Classes', path: '/admin/classes', icon: faGraduationCap },
           { name: 'Monitoring', path: '/admin/monitoring', icon: faChartPie },
-          { name: 'Settings', path: '/admin/settings', icon: faCogs },
+                  { name: 'Settings', path: '/admin/settings', icon: faCogs },
+          { name: 'Chat', path: '/admin/chat', icon: faCommentDots },
+          { name: 'Pendapatan', path: '/admin/income', icon: faDollarSign },
+          { name: 'Lomba', path: '/lomba', icon: faTrophy },
           { name: 'Logs', path: '/admin/logs', icon: faHistory },
+          { name: 'Backup', path: '/admin/backups', icon: faArchive },
+          { name: 'Profile', path: '/admin/settings/account', icon: faUserCircle },
         ];
-      case 'guru':
-        return [
-          { name: 'Dashboard', path: '/guru/dashboard', icon: faChartLine },
-          { name: 'Submissions', path: '/guru/submissions', icon: faCheckDouble },
-          { name: 'Monitoring', path: '/guru/monitoring', icon: faChartPie },
-          { name: 'Students', path: '/guru/students', icon: faUsers },
-          { name: 'Guidelines', path: '/guru/tasks', icon: faInfoCircle },
+      case 'guru': {
+        const guruLinks = [
+          { name: 'Dashboard', path: '/guru/dashboard', icon: faChartLine, module: 'dashboard' },
+          { name: 'Submissions', path: '/guru/submissions', icon: faCheckDouble, module: 'submissions' },
+          { name: 'Monitoring', path: '/guru/monitoring', icon: faChartPie, module: 'monitoring' },
+          { name: 'Students', path: '/guru/students', icon: faUsers, module: 'students' },
+          { name: 'Pendapatan', path: '/guru/income', icon: faDollarSign, module: 'pendapatan' },
+          { name: 'Lomba', path: '/lomba', icon: faTrophy, module: 'lomba' },
+          { name: 'Chat', path: '/guru/chat', icon: faCommentDots, module: 'chat' },
+          { name: 'Guidelines', path: '/guru/tasks', icon: faInfoCircle, module: 'tasks' },
+          { name: 'Pengaturan', path: '/guru/settings/account', icon: faUserCircle, module: 'profile' },
         ];
+        return filterLinks(guruLinks);
+      }
+      case 'idn': {
+        const idnLinks = [
+          { name: 'Dashboard', path: '/idn/dashboard', icon: faChartLine, module: 'dashboard' },
+          { name: 'Siswa', path: '/idn/students', icon: faUsers, module: 'students' },
+          { name: 'Kunjungan', path: '/idn/school-visits', icon: faGraduationCap, module: 'school_visits' },
+          { name: 'Lomba', path: '/lomba', icon: faTrophy, module: 'lomba' },
+          { name: 'Pengaturan', path: '/idn/settings/account', icon: faUserCircle, module: 'profile' },
+        ];
+        return filterLinks(idnLinks);
+      }
+      case 'kepala_sekolah': {
+        const ksLinks = [
+          { name: 'Dashboard', path: '/idn/dashboard', icon: faChartLine, module: 'dashboard' },
+          { name: 'Lomba', path: '/lomba', icon: faTrophy, module: 'lomba' },
+          { name: 'Pengaturan', path: '/idn/settings/account', icon: faUserCircle, module: 'profile' },
+        ];
+        return filterLinks(ksLinks);
+      }
       case 'siswa':
-      default:
-        return [
-          { name: 'Dashboard', path: '/siswa/dashboard', icon: faChartLine },
-          { name: 'Upload Project', path: '/siswa/projects', icon: faFileUpload },
-          { name: 'My SKL', path: '/siswa/skl', icon: faFileContract },
+      default: {
+        const siswaLinks = [
+          { name: 'Dashboard', path: '/siswa/dashboard', icon: faChartLine, module: 'dashboard' },
+          { name: 'Upload Project', path: '/siswa/projects', icon: faFileUpload, module: 'projects' },
+          { name: 'My SKL', path: '/siswa/skl', icon: faFileContract, module: 'skl' },
+          { name: 'Chat', path: '/siswa/chat', icon: faCommentDots, module: 'chat' },
+          { name: 'Pengaturan', path: '/siswa/settings', icon: faUserCircle, module: 'profile' },
         ];
+        return filterLinks(siswaLinks);
+      }
     }
   };
 
@@ -80,9 +125,9 @@ export function Sidebar({ isOpen, closeSidebar }) {
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-black font-display tracking-tight text-slate-900 dark:text-white leading-none">
-                  SKL <span className="text-indigo-600 dark:text-indigo-400">IDN</span>
+                  IPSA
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400 mt-1">Sistem Kelulusan</span>
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400 mt-1">IDN Pamijahan Super Apps</span>
               </div>
             </Link>
           </div>
@@ -94,8 +139,13 @@ export function Sidebar({ isOpen, closeSidebar }) {
                 Menu Utama
               </h2>
               <nav className="space-y-1.5">
-                {links.map((link, idx) => {
-                  const isActive = location.pathname.startsWith(link.path);
+                {(() => {
+                  const sorted = [...links].sort((a, b) => b.path.length - a.path.length);
+                  const activeLink = sorted.find(l =>
+                    location.pathname === l.path || location.pathname.startsWith(l.path + '/')
+                  );
+                  return links.map((link, idx) => {
+                  const isActive = link === activeLink;
                   return (
                     <Link
                       key={link.path}
@@ -126,7 +176,8 @@ export function Sidebar({ isOpen, closeSidebar }) {
                       )}
                     </Link>
                   );
-                })}
+                });
+              })()}
               </nav>
             </div>
 

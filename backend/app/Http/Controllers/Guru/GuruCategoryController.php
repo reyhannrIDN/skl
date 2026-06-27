@@ -79,7 +79,7 @@ class GuruCategoryController extends Controller
         $category = ProjectCategory::where('guru_id', $request->user()->id)->findOrFail($id);
         
         $validated = $request->validate([
-            'requirements' => 'required|array',
+            'requirements' => 'present|array',
             'requirements.*.id' => 'nullable|exists:project_requirements,id',
             'requirements.*.label' => 'required|string|max:255',
             'requirements.*.type' => 'required|in:local_file,drive_file,link,text,url',

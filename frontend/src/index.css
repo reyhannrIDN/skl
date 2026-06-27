@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* ─── SKL IDN — Light Theme ─── */
+    /* ─── IPSA — Light Theme ─── */
     --background: 0 0% 100%;
     --foreground: 240 10% 4%;
 
@@ -43,7 +43,7 @@
   }
 
   .dark {
-    /* ─── SKL IDN — Dark Tech Premium Theme ─── */
+    /* ─── IPSA — Dark Tech Premium Theme ─── */
     --background: 240 20% 5%;
     --foreground: 240 100% 97%;
 

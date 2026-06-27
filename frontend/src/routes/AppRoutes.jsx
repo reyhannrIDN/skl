@@ -15,6 +15,8 @@ import { DashboardAdmin } from '@/pages/admin/DashboardAdmin';
 import { UserManagement } from '@/pages/admin/UserManagement';
 import { SystemSettings } from '@/pages/admin/SystemSettings';
 import { ActivityLogs } from '@/pages/admin/ActivityLogs';
+import { BackupManagement } from '@/pages/admin/BackupManagement';
+import { PermissionManagement } from '@/pages/admin/PermissionManagement';
 import { Reports } from '@/pages/admin/Reports';
 import { DashboardSiswa } from '@/pages/siswa/DashboardSiswa';
 import { SubmissionCreate } from '@/pages/siswa/SubmissionCreate';
@@ -22,6 +24,7 @@ import { SubmissionDetail } from '@/pages/siswa/SubmissionDetail';
 import SiswaProjectList from '@/pages/siswa/SiswaProjectList';
 import { SiswaMySKL } from '@/pages/siswa/SiswaMySKL';
 import { ProfileSettings } from '@/pages/siswa/ProfileSettings';
+import { AccountSettings } from '@/pages/common/AccountSettings';
 import { NotificationList } from '@/pages/common/NotificationList';
 import { ErrorPage } from '@/pages/common/ErrorPage';
 import { CategoryManagement } from '@/pages/guru/CategoryManagement';
@@ -29,6 +32,17 @@ import { StudentManagement } from '@/pages/guru/StudentManagement';
 import { ClassManagement } from '@/pages/admin/ClassManagement';
 import { MyClassTaskManagement } from '@/pages/guru/MyClassTaskManagement';
 import { PerformanceStats } from '@/pages/common/PerformanceStats';
+import { ChatPage } from '@/pages/chat/ChatPage';
+import { IncomeDashboard } from '@/pages/income/IncomeDashboard';
+import { IncomeInput } from '@/pages/income/IncomeInput';
+import { IncomeDetail } from '@/pages/income/IncomeDetail';
+import { DashboardIdn } from '@/pages/idn/DashboardIdn';
+import { IdnStudents } from '@/pages/idn/IdnStudents';
+import { IdnSchoolVisits } from '@/pages/idn/IdnSchoolVisits';
+import { LombaDashboard } from '@/pages/lomba/LombaDashboard';
+import { LombaList } from '@/pages/lomba/LombaList';
+import { LombaForm } from '@/pages/lomba/LombaForm';
+import { LombaDetail } from '@/pages/lomba/LombaDetail';
 
 // Public Pantau Portal
 import { PantauLogin } from '@/pages/public/PantauLogin';
@@ -44,6 +58,8 @@ export function AppRoutes() {
         case 'superadmin': return <Navigate to="/admin/dashboard" replace />;
         case 'guru': return <Navigate to="/guru/dashboard" replace />;
         case 'siswa': return <Navigate to="/siswa/dashboard" replace />;
+        case 'idn': 
+        case 'kepala_sekolah': return <Navigate to="/idn/dashboard" replace />;
         default: return children;
       }
     }
@@ -58,7 +74,7 @@ export function AppRoutes() {
       <Route path="/pantau/dashboard" element={<PantauResult />} />
 
       {/* Common Authenticated Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['superadmin', 'guru', 'siswa']} />}>
+      <Route element={<ProtectedRoute allowedRoles={['superadmin', 'guru', 'siswa', 'idn']} />}>
         <Route element={<DashboardLayout />}>
           <Route path="/notifications" element={<NotificationList />} />
         </Route>
@@ -74,6 +90,12 @@ export function AppRoutes() {
           <Route path="/admin/settings" element={<SystemSettings />} />
           <Route path="/admin/reports" element={<Reports />} />
           <Route path="/admin/logs" element={<ActivityLogs />} />
+          <Route path="/admin/backups" element={<BackupManagement />} />
+          <Route path="/admin/permissions" element={<PermissionManagement />} />
+          <Route path="/admin/settings/account" element={<AccountSettings />} />
+          <Route path="/admin/chat" element={<ChatPage />} />
+          <Route path="/admin/income" element={<IncomeDashboard />} />
+          <Route path="/admin/income/detail/:studentId" element={<IncomeDetail />} />
         </Route>
       </Route>
 
@@ -87,6 +109,11 @@ export function AppRoutes() {
           <Route path="/guru/students" element={<StudentManagement />} />
           <Route path="/guru/tasks" element={<MyClassTaskManagement />} />
           <Route path="/guru/monitoring" element={<PerformanceStats />} />
+          <Route path="/guru/chat" element={<ChatPage />} />
+          <Route path="/guru/income" element={<IncomeDashboard />} />
+          <Route path="/guru/income/input" element={<IncomeInput />} />
+          <Route path="/guru/income/detail/:studentId" element={<IncomeDetail />} />
+          <Route path="/guru/settings/account" element={<AccountSettings />} />
         </Route>
       </Route>
 
@@ -100,7 +127,29 @@ export function AppRoutes() {
           <Route path="/siswa/submission/create" element={<SubmissionCreate />} />
           <Route path="/siswa/submission/:slug" element={<SubmissionDetail />} />
           <Route path="/siswa/submission/:slug/edit" element={<SubmissionCreate />} />
+          <Route path="/siswa/chat" element={<ChatPage />} />
           <Route path="/siswa/settings" element={<ProfileSettings />} />
+        </Route>
+      </Route>
+
+      {/* IDN + Kepala Sekolah Routes */}
+      <Route element={<ProtectedRoute allowedRoles={['idn', 'kepala_sekolah']} />}>
+        <Route element={<DashboardLayout />}>
+          <Route path="/idn/dashboard" element={<DashboardIdn />} />
+          <Route path="/idn/students" element={<IdnStudents />} />
+          <Route path="/idn/school-visits" element={<IdnSchoolVisits />} />
+          <Route path="/idn/settings/account" element={<AccountSettings />} />
+        </Route>
+      </Route>
+
+      {/* Lomba Routes - multiple roles */}
+      <Route element={<ProtectedRoute allowedRoles={['superadmin', 'idn', 'guru', 'kepala_sekolah']} />}>
+        <Route element={<DashboardLayout />}>
+          <Route path="/lomba" element={<LombaList />} />
+          <Route path="/lomba/create" element={<LombaForm />} />
+          <Route path="/lomba/:id" element={<LombaDetail />} />
+          <Route path="/lomba/:id/edit" element={<LombaForm />} />
+          <Route path="/lomba/dashboard" element={<LombaDashboard />} />
         </Route>
       </Route>
 

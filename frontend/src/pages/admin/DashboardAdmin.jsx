@@ -85,7 +85,7 @@ export function DashboardAdmin() {
               <span className="text-white/90">{user?.name}</span>
             </h1>
             <p className="text-primary-foreground/80 max-w-md font-medium">
-              Kelola ekosistem SKL IDN, pantau data lulusan, dan atur konfigurasi sistem dengan mudah.
+              Kelola ekosistem IPSA, pantau data lulusan, dan atur konfigurasi sistem dengan mudah.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -173,7 +173,7 @@ export function DashboardAdmin() {
               title="Log Aktivitas"
               description="Pantau audit log dan aktivitas sistem terbaru."
               icon={<ActivitySquare />}
-              onClick={() => navigate('/admin/activity-logs')}
+               onClick={() => navigate('/admin/logs')}
               color="amber"
             />
             <ActionCard 

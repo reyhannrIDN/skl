@@ -184,6 +184,11 @@ export function SubmissionCreate() {
          data.append(slug, dynamicValues[slug]);
       });
 
+      const reqTypeNotMultiple = (slug) => {
+           // Small fast internal check for single files
+           return slug !== 'screenshots'; 
+      };
+
       Object.keys(files).forEach(slug => {
          if (files[slug]) {
              files[slug].forEach(file => {
@@ -195,11 +200,6 @@ export function SubmissionCreate() {
              }
          }
       });
-      
-      const reqTypeNotMultiple = (slug) => {
-           // Small fast internal check for single files
-           return slug !== 'screenshots'; 
-      }
 
       if (urlSlug) {
          await siswaApi.updateSubmission(urlSlug, data);

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { authApi } from '@/api/endpoints';
@@ -21,6 +21,7 @@ function getDashboardPath(role) {
     case 'superadmin': return '/admin/dashboard';
     case 'guru':       return '/guru/dashboard';
     case 'siswa':      return '/siswa/dashboard';
+    case 'idn':        return '/idn/dashboard';
     default:           return '/';
   }
 }
@@ -48,6 +49,47 @@ export function LoginPage() {
 
   const rd = LOGIN_CONFIG;
 
+  /* ── reCAPTCHA v3 ── */
+  const executeCaptcha = async (action = 'login') => {
+    if (!window.grecaptcha) {
+      await new Promise(r => {
+        let i = 0;
+        const iv = setInterval(() => {
+          if (window.grecaptcha || ++i > 60) { clearInterval(iv); r(); }
+        }, 100);
+      });
+    }
+    if (!window.grecaptcha) { console.warn('grecaptcha not available'); return ''; }
+    try {
+      const token = await new Promise((resolve, reject) => {
+        window.grecaptcha.ready(async () => {
+          try {
+            const t = await window.grecaptcha.execute(
+              import.meta.env.VITE_RECAPTCHA_SITE_KEY, { action }
+            );
+            resolve(t);
+          } catch (err) {
+            reject(err);
+          }
+        });
+        setTimeout(() => reject(new Error('timeout')), 10000);
+      });
+      return token;
+    } catch (e) {
+      console.warn('reCAPTCHA v3 failed, proceeding without:', e.message);
+      return '';
+    }
+  };
+
+  useEffect(() => {
+    const src = 'https://www.google.com/recaptcha/api.js?render=' + import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+    if (!document.querySelector('script[src^="https://www.google.com/recaptcha/api.js"]')) {
+      const s = document.createElement('script');
+      s.src = src;
+      document.head.appendChild(s);
+    }
+  }, []);
+
   /* Clear messages */
   const clearMsgs = useCallback(() => {
     setErrMsg(''); setOkMsg(''); setIdErr(false); setPwErr(false);
@@ -73,9 +115,11 @@ export function LoginPage() {
     }
 
     setIsLoading(true);
+
+    const token = await executeCaptcha('login');
+
     try {
-      await authApi.getCsrfCookie();
-      const response = await authApi.login({ email: identity.trim(), password });
+      const response = await authApi.login({ email: identity.trim(), password, captcha_token: token || '' });
       const { user, access_token, message } = response.data;
       
       // Update global store
@@ -100,7 +144,6 @@ export function LoginPage() {
     setIsLoading(true);
     clearMsgs();
     try {
-      await authApi.getCsrfCookie();
       // With useGoogleLogin, we get an access_token, not a GSI credential string by default
       // Unless we use 'auth-code' flow. Let's use the simplest flow.
       const response = await authApi.googleLogin({ 
@@ -153,7 +196,8 @@ export function LoginPage() {
         <div className="pl-inner">
           <Link to="/" className="login-logo">
             <div className="logo-mark">⚡</div>
-            <div className="logo-text">SKL<span>IDN</span></div>
+            <div className="logo-text">IPSA</div>
+            <div className="text-[8px] uppercase tracking-[0.2em] font-bold text-slate-400/80">IDN Pamijahan Super Apps</div>
           </Link>
 
           <div className="pl-hero">
@@ -203,7 +247,7 @@ export function LoginPage() {
             <ThemeToggle />
           </div>
           <div className="fh">
-            <div className="fh-title">Masuk ke SKL IDN</div>
+            <div className="fh-title">Masuk ke IPSA</div>
             <p className="fh-sub">Masukkan kredensial Anda untuk melanjutkan ke dashboard.</p>
           </div>
 

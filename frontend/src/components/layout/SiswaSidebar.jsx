@@ -38,6 +38,10 @@ export function SiswaSidebar({ user, logout, navigate, sidebarOpen, closeSidebar
           <span className="sb-icon">◈</span> Lihat SKL
         </Link>
 
+        <Link className={`sb-link ${activePath.startsWith('/siswa/chat') ? 'active' : ''}`} to="/siswa/chat">
+          <span className="sb-icon">💬</span> Chat
+        </Link>
+
         <div className="sb-section">Lainnya</div>
 
         <Link className={`sb-link ${activePath === '/siswa/settings' ? 'active' : ''}`} to="/siswa/settings">

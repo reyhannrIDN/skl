@@ -144,18 +144,18 @@ export function CategoryManagement() {
           <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white font-display">
             Manajemen <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Kategori</span>
           </h1>
-          <div className="flex items-center gap-3">
-             <Badge className="bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-none font-bold py-1 px-3 rounded-full flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+             <Badge className="w-fit bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-none font-bold py-1 px-3 rounded-full flex items-center gap-2">
                 <FontAwesomeIcon icon={faLayerGroup} className="text-[10px]" />
                 {categories.length} Total Kategori
              </Badge>
-             <div className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+             <div className="hidden sm:block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Kustomisasi parameter submission project.</p>
           </div>
         </div>
         <Button 
           onClick={handleAddCategory} 
-          className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shadow-xl shadow-indigo-500/20 transition-all hover:scale-105 active:scale-95 gap-3"
+          className="w-full md:w-auto justify-center h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shadow-xl shadow-indigo-500/20 transition-all hover:scale-105 active:scale-95 gap-3 shrink-0"
         >
           <FontAwesomeIcon icon={faPlus} /> Tambah Kategori
         </Button>
@@ -264,18 +264,18 @@ export function CategoryManagement() {
                            <p className="text-indigo-100/80 text-sm font-medium line-clamp-1">{selectedCategory.description || 'Pusat pengaturan metadata dan requirements project.'}</p>
                         </div>
                      </div>
-                     <div className="flex flex-col sm:flex-row gap-4">
+                     <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                        <Button 
                          variant="ghost"
                          onClick={() => setIsDeleteModalOpen(true)}
-                         className="h-16 px-6 rounded-[1.5rem] bg-white/10 text-white hover:bg-rose-500 hover:text-white border border-white/20 hover:border-transparent font-bold transition-all shadow-xl"
+                         className="w-full sm:w-auto justify-center h-16 px-6 rounded-[1.5rem] bg-white/10 text-white hover:bg-rose-500 hover:text-white border border-white/20 hover:border-transparent font-bold transition-all shadow-xl"
                          title="Hapus Kategori"
                        >
                          <FontAwesomeIcon icon={faTrash} />
                        </Button>
                        <Button 
                          onClick={handleSaveCategory}
-                         className="h-16 px-10 rounded-[1.5rem] bg-white text-indigo-600 hover:bg-slate-100 font-black shadow-2xl transition-all hover:scale-105 active:scale-95 gap-3"
+                         className="w-full sm:w-auto justify-center h-16 px-10 rounded-[1.5rem] bg-white text-indigo-600 hover:bg-slate-100 font-black shadow-2xl transition-all hover:scale-105 active:scale-95 gap-3"
                        >
                          <FontAwesomeIcon icon={faSave} /> SIMPAN
                        </Button>
@@ -363,18 +363,18 @@ export function CategoryManagement() {
 
                {/* Requirements Manager */}
                <Card className="border-none shadow-2xl bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl rounded-[2.5rem] border border-white dark:border-white/5">
-                  <CardHeader className="px-10 pt-10 pb-6 flex flex-row justify-between items-center">
-                     <CardTitle className="text-2xl font-black flex items-center gap-4">
-                        <div className="w-10 h-10 bg-indigo-500 text-white rounded-xl flex items-center justify-center shadow-lg">
+                  <CardHeader className="px-10 pt-10 pb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                     <CardTitle className="text-2xl font-black flex items-center gap-4 w-full sm:w-auto">
+                        <div className="w-10 h-10 bg-indigo-500 text-white rounded-xl flex items-center justify-center shadow-lg shrink-0">
                            <FontAwesomeIcon icon={faLayerGroup} />
                         </div>
-                        Field Submission Requirements
+                        <span className="truncate">Field Submission Requirements</span>
                      </CardTitle>
                      <Button 
                         variant="outline" 
                         size="lg" 
                         onClick={handleAddRequirement} 
-                        className="rounded-2xl border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400 font-black hover:bg-indigo-600 hover:text-white transition-all gap-3"
+                        className="w-full sm:w-auto justify-center rounded-2xl border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400 font-black hover:bg-indigo-600 hover:text-white transition-all gap-3 shrink-0"
                      >
                         <FontAwesomeIcon icon={faPlus} /> TAMBAH FIELD
                      </Button>
@@ -396,30 +396,30 @@ export function CategoryManagement() {
 
                            return (
                               <div key={idx} className="group relative bg-white/40 dark:bg-white/[0.03] border border-white dark:border-white/5 rounded-[2rem] p-6 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-500/30 transition-all duration-500 flex flex-col gap-5 w-full xl:w-[calc(50%-0.75rem)]">
-                                 <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                       <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center", props.bg, props.color)}>
-                                          <FontAwesomeIcon icon={props.icon} className="text-xl" />
-                                       </div>
-                                       <div>
-                                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{props.label}</span>
-                                          <Input 
-                                             value={req.label} 
-                                             onChange={(e) => handleUpdateRequirement(idx, 'label', e.target.value)}
-                                             className="h-8 p-0 bg-transparent border-none text-base font-black text-slate-800 dark:text-white focus-visible:ring-0 shadow-none"
-                                             placeholder="Label field..."
-                                          />
-                                       </div>
-                                    </div>
-                                    <Button 
-                                       variant="ghost" 
-                                       size="icon" 
-                                       onClick={() => handleRemoveRequirement(idx)}
-                                       className="w-10 h-10 rounded-xl text-slate-300 hover:text-rose-500 hover:bg-rose-500/10 group-hover:opacity-100 lg:opacity-0 transition-all"
-                                    >
-                                       <FontAwesomeIcon icon={faTrash} className="text-xs" />
-                                    </Button>
-                                 </div>
+                                 <div className="flex items-start sm:items-center justify-between gap-2">
+                                     <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                                        <div className={cn("w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0", props.bg, props.color)}>
+                                           <FontAwesomeIcon icon={props.icon} className="text-lg sm:text-xl" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 truncate block">{props.label}</span>
+                                           <Input 
+                                              value={req.label} 
+                                              onChange={(e) => handleUpdateRequirement(idx, 'label', e.target.value)}
+                                              className="h-8 p-0 bg-transparent border-none text-sm sm:text-base font-black text-slate-800 dark:text-white focus-visible:ring-0 shadow-none truncate w-full"
+                                              placeholder="Label field..."
+                                           />
+                                        </div>
+                                     </div>
+                                     <Button 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        onClick={() => handleRemoveRequirement(idx)}
+                                        className="w-10 h-10 shrink-0 rounded-xl text-slate-300 hover:text-rose-500 hover:bg-rose-500/10 group-hover:opacity-100 lg:opacity-0 transition-all flex items-center justify-center"
+                                     >
+                                        <FontAwesomeIcon icon={faTrash} className="text-xs" />
+                                     </Button>
+                                  </div>
                                  
                                  <div className="flex flex-col sm:flex-row gap-4 w-full">
                                     <div className="w-full sm:w-[calc(50%-0.5rem)] space-y-1.5 flex flex-col">
@@ -451,17 +451,40 @@ export function CategoryManagement() {
                                     </div>
                                  </div>
 
-                                 {req.type === 'local_file' && (
-                                    <div className="pt-2 animate-in slide-in-from-top-2 duration-300">
-                                       <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-1 block">Ekstensi Diizinkan</label>
-                                       <Input 
-                                          value={req.allowed_extensions || ''} 
-                                          onChange={(e) => handleUpdateRequirement(idx, 'allowed_extensions', e.target.value)}
-                                          className="h-11 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-xs font-bold"
-                                          placeholder="e.g. .zip, .pdf, .docx"
-                                       />
-                                    </div>
-                                 )}
+                                  {req.type === 'local_file' && (
+                                     <div className="pt-2 animate-in slide-in-from-top-2 duration-300">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Ekstensi Diizinkan</label>
+                                        <div className="flex flex-wrap gap-1.5">
+                                           {['pdf','doc','docx','xls','xlsx','ppt','pptx','jpg','jpeg','png','gif','webp','svg','mp4','mp3','zip','rar','7z','txt','csv'].map(ext => {
+                                              const current = (req.allowed_extensions || '').split(',').map(s => s.trim().replace(/^\./, '')).filter(Boolean);
+                                              const checked = current.includes(ext);
+                                              return (
+                                                <button
+                                                  key={ext}
+                                                  type="button"
+                                                  onClick={() => {
+                                                    let updated = current;
+                                                    if (checked) {
+                                                      updated = updated.filter(e => e !== ext);
+                                                    } else {
+                                                      updated = [...updated, ext];
+                                                    }
+                                                    handleUpdateRequirement(idx, 'allowed_extensions', updated.map(e => `.${e}`).join(','));
+                                                  }}
+                                                  className={cn(
+                                                    'px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all',
+                                                    checked
+                                                      ? 'bg-indigo-500 text-white border-indigo-500 shadow-sm'
+                                                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-transparent hover:border-slate-300 dark:hover:border-slate-600'
+                                                  )}
+                                                >
+                                                  {ext}
+                                                </button>
+                                              );
+                                           })}
+                                        </div>
+                                     </div>
+                                  )}
                               </div>
                            );
                         })}

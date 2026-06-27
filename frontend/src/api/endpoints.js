@@ -10,4 +10,7 @@ export const authApi = {
   updateProfile: (data) => api.put('/auth/profile', data),
   changePassword: (data) => api.post('/auth/change-password', data),
   systemInfo: () => api.get('/system-info'),
+  getLockSettings: () => api.get('/auth/lock-settings'),
+  updateLockSettings: (data) => api.put('/auth/lock-settings', data),
+  verifyLock: (data) => api.post('/auth/verify-lock', data),
 };

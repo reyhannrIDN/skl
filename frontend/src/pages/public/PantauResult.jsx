@@ -118,7 +118,8 @@ export function PantauResult() {
                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-lg transition-transform hover:scale-110">
                     <FontAwesomeIcon icon={faUserGraduate} className="text-base" />
                  </div>
-                 <h2 className="text-xl font-black font-display tracking-tight text-slate-900 dark:text-white leading-none uppercase">SKL<span className="text-indigo-600">IDN</span></h2>
+                 <h2 className="text-xl font-black font-display tracking-tight text-slate-900 dark:text-white leading-none uppercase">IPSA</h2>
+                 <div className="text-[8px] uppercase tracking-[0.2em] font-bold text-slate-400/60">IDN Pamijahan Super Apps</div>
               </div>
               
               <button 

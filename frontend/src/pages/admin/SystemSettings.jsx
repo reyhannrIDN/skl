@@ -8,7 +8,8 @@ import {
   Save, Loader2, Power, PowerOff, 
   Settings2, School, GraduationCap, 
   ShieldCheck, AlertCircle, Info,
-  Sparkles, ShieldAlert
+  Sparkles, ShieldAlert, MessageCircle,
+  FileUp, Image
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -19,7 +20,11 @@ export function SystemSettings() {
     academic_year: '',
     registration_open: 'false',
     headmaster_name: '',
-    headmaster_nip: ''
+    headmaster_nip: '',
+    chat_enabled: 'true',
+    chat_file_upload_enabled: 'true',
+    chat_max_file_size_mb: '10',
+    chat_allowed_file_types: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -32,7 +37,15 @@ export function SystemSettings() {
     setLoading(true);
     try {
       const { data } = await adminApi.getSettings();
-      setSettings(prev => ({ ...prev, ...data.settings }));
+      const loaded = { ...data.settings };
+      if (loaded.chat_allowed_file_types && loaded.chat_allowed_file_types.startsWith('[')) {
+        try {
+          loaded.chat_allowed_file_types = JSON.parse(loaded.chat_allowed_file_types).join(',');
+        } catch (e) {
+          // keep as-is
+        }
+      }
+      setSettings(prev => ({ ...prev, ...loaded }));
     } catch (error) {
       toast.error('Gagal memuat pengaturan sistem');
     } finally {
@@ -45,7 +58,10 @@ export function SystemSettings() {
     setSaving(true);
     try {
       const payload = { ...settings };
-      await adminApi.updateSettings(payload);
+      if (typeof payload.chat_allowed_file_types === 'string' && !payload.chat_allowed_file_types.startsWith('[')) {
+        payload.chat_allowed_file_types = JSON.stringify(payload.chat_allowed_file_types.split(',').map(s => s.trim()).filter(Boolean));
+      }
+      await adminApi.updateSettings({ settings: payload });
       toast.success('Pengaturan berhasil disimpan');
       fetchSettings();
     } catch (error) {
@@ -228,9 +244,8 @@ export function SystemSettings() {
           </Card>
         </motion.div>
 
-        {/* Access Controls & Quick Info */}
-        <motion.div variants={itemVariants} className="lg:col-span-4 space-y-8">
-          {/* Registration Toggle Card */}
+        {/* Kontrol Akses */}
+        <motion.div variants={itemVariants} className="lg:col-span-4">
           <Card className={`border-none shadow-xl shadow-black/5 rounded-[2rem] overflow-hidden transition-all duration-500 ${isRegistrationOpen ? 'ring-2 ring-emerald-500/30' : ''}`}>
             <CardHeader className="bg-muted/30 border-b">
               <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
@@ -269,6 +284,87 @@ export function SystemSettings() {
                </div>
             </CardContent>
           </Card>
+        </motion.div>
+
+        {/* Chat Settings */}
+        <motion.div variants={itemVariants} className="lg:col-span-8">
+          <Card className="border-none shadow-xl shadow-black/5 rounded-[2rem] overflow-hidden">
+            <CardHeader className="bg-muted/30 border-b p-8">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-emerald-500 rounded-2xl text-white shadow-lg shadow-emerald-500/20">
+                  <MessageCircle className="w-6 h-6" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-bold">Pengaturan Chat</CardTitle>
+                  <CardDescription>Konfigurasi fitur chat grup dan upload file.</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Aktifkan Chat</Label>
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setSettings({...settings, chat_enabled: settings.chat_enabled === 'true' ? 'false' : 'true'})}
+                      className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${settings.chat_enabled === 'true' ? 'bg-emerald-500' : 'bg-muted-foreground/30'}`}
+                    >
+                      <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow-sm ${settings.chat_enabled === 'true' ? 'translate-x-6' : 'translate-x-1'}`} />
+                    </button>
+                    <span className="text-sm font-medium">{settings.chat_enabled === 'true' ? 'Aktif' : 'Nonaktif'}</span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Upload File di Chat</Label>
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setSettings({...settings, chat_file_upload_enabled: settings.chat_file_upload_enabled === 'true' ? 'false' : 'true'})}
+                      className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${settings.chat_file_upload_enabled === 'true' ? 'bg-emerald-500' : 'bg-muted-foreground/30'}`}
+                    >
+                      <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow-sm ${settings.chat_file_upload_enabled === 'true' ? 'translate-x-6' : 'translate-x-1'}`} />
+                    </button>
+                    <span className="text-sm font-medium">{settings.chat_file_upload_enabled === 'true' ? 'Aktif' : 'Nonaktif'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <Label htmlFor="chat_max_file_size_mb" className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                    <FileUp className="w-3 h-3 inline mr-1" />Maks Ukuran File (MB)
+                  </Label>
+                  <Input 
+                    id="chat_max_file_size_mb"
+                    type="number"
+                    min="1"
+                    max="100"
+                    className="h-12 rounded-xl bg-muted/50 border-transparent focus:bg-background focus:border-primary transition-all font-medium"
+                    value={settings.chat_max_file_size_mb || '10'}
+                    onChange={(e) => setSettings({...settings, chat_max_file_size_mb: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-3">
+                  <Label htmlFor="chat_allowed_file_types" className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                    <Image className="w-3 h-3 inline mr-1" />Tipe File Diizinkan
+                  </Label>
+                  <Input 
+                    id="chat_allowed_file_types"
+                    className="h-12 rounded-xl bg-muted/50 border-transparent focus:bg-background focus:border-primary transition-all font-medium"
+                    value={settings.chat_allowed_file_types || ''}
+                    onChange={(e) => setSettings({...settings, chat_allowed_file_types: e.target.value})}
+                    placeholder="jpg,jpeg,png,gif,pdf,doc,docx,zip"
+                  />
+                  <p className="text-[11px] text-muted-foreground px-1">Pisahkan dengan koma, tanpa spasi</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Access Controls & Quick Info */}
+        <motion.div variants={itemVariants} className="lg:col-span-4 space-y-8">
 
           {/* Security Alert Card */}
           <Card className="bg-rose-500 border-none shadow-xl shadow-rose-500/20 rounded-[2rem] text-white">

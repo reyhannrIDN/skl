@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { Fancybox } from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
 import './LandingPage.css';
 
 /* ── Dashboard link helper ── */
@@ -10,6 +12,8 @@ function getDashboardLink(role) {
     case 'superadmin': return '/admin/dashboard';
     case 'guru':       return '/guru/dashboard';
     case 'siswa':      return '/siswa/dashboard';
+    case 'idn':        return '/idn/dashboard';
+    case 'kepala_sekolah': return '/idn/dashboard';
     default:           return '/';
   }
 }
@@ -115,44 +119,150 @@ const STEPS = [
   { emoji: '🏆', idx: 4, h: 'Project Bersinar',     p: 'Project yang disetujui tampil di showcase publik dan bisa dilihat semua orang.' },
 ];
 
-const TESTIMONIALS = [
-  {
-    av: { bg: 'linear-gradient(135deg,#34D399,#059669)', color: '#000', init: 'RA' },
-    name: 'Rizky Ananda', role: 'Siswa · XI RPL 1 · SMKN 3 Bandung',
-    q: '"Sebelum ada SKL IDN, project saya cuma tersimpan di laptop dan tidak ada yang tahu. Sekarang sudah dilihat 1.200+ orang dan dapat feedback dari guru yang sangat membantu!"',
-    tag: { label: '📱 Android Dev', bg: 'rgba(52,211,153,.1)', color: 'var(--lp-green)', border: '1px solid rgba(52,211,153,.2)' },
-  },
-  {
-    av: { bg: 'linear-gradient(135deg,#FBBF24,#B45309)', color: '#000', init: 'BW' },
-    name: 'Bu Wulandari, S.Pd', role: 'Guru TKJ · SMKN 1 Surabaya',
-    q: '"Sebagai guru, saya sangat terbantu. Antrian review jelas, bisa kasih feedback langsung, dan orang tua murid bisa pantau sendiri perkembangan anaknya. Luar biasa!"',
-    tag: { label: '👩‍🏫 Guru Reviewer', bg: 'rgba(251,191,36,.1)', color: 'var(--lp-amber)', border: '1px solid rgba(251,191,36,.2)' },
-  },
-  {
-    av: { bg: 'linear-gradient(135deg,#7C6EFA,#4338CA)', color: '#fff', init: 'HS' },
-    name: 'Pak Hendra Santoso', role: 'Orang Tua · Putra di X MM',
-    q: '"Saya bisa lihat project anak saya kapan saja dan tahu sudah sejauh mana progresnya. Bangga sekali lihat karya anak di-approve guru dan bisa dilihat publik."',
-    tag: { label: '👨‍👩‍👧 Orang Tua', bg: 'rgba(124,110,250,.1)', color: 'var(--lp-p2)', border: '1px solid rgba(124,110,250,.2)' },
-  },
-  {
-    av: { bg: 'linear-gradient(135deg,#22D3EE,#0891B2)', color: '#000', init: 'DN' },
-    name: 'Dian Nurcahya', role: 'Siswa · XI TKI · SMKN 5 Jakarta',
-    q: '"Project IoT Hidroponik saya akhirnya bisa dilihat banyak orang! Prosesnya mudah banget — tinggal upload, tunggu review guru, dan langsung tampil di showcase."',
-    tag: { label: '🔌 IoT Developer', bg: 'rgba(34,211,238,.1)', color: 'var(--lp-cyan)', border: '1px solid rgba(34,211,238,.2)' },
-  },
-  {
-    av: { bg: 'linear-gradient(135deg,#E879F9,#9333EA)', color: '#fff', init: 'FS' },
-    name: 'Fira Salsabila', role: 'Siswa · XII TKJ · SMKN 2 Malang',
-    q: '"Platform ini yang paling mudah dan keren tampilannya. Saya bisa edit project saya kapanpun, dan feedback guru langsung muncul dengan notifikasi. Top banget!"',
-    tag: { label: '🌐 Web Developer', bg: 'rgba(232,121,249,.1)', color: 'var(--lp-pink)', border: '1px solid rgba(232,121,249,.2)' },
-  },
-  {
-    av: { bg: 'linear-gradient(135deg,#FB7185,#BE123C)', color: '#fff', init: 'AP' },
-    name: 'Pak Agus Prasetyo', role: 'Kepala Sekolah · SMKN 7 Yogyakarta',
-    q: '"SKL IDN menjadi bukti nyata kualitas lulusan kami. Calon perusahaan bisa langsung melihat karya siswa sebelum rekrutmen. Ini revolusi portofolio siswa SMK!"',
-    tag: { label: '🏫 Kepala Sekolah', bg: 'rgba(251,113,133,.1)', color: 'var(--lp-rose)', border: '1px solid rgba(251,113,133,.2)' },
-  },
+const DUMMY_LOMBA = [
+  { id: 'd1', nama_lomba: 'LKS Nasional Web Tech', tingkat: 'nasional', status_hasil: 'juara', juara_ke: 1, kategori: 'Website', lokasi: 'Jakarta', tanggal_mulai: '2025-10-12', tim: [{ nama_tim: 'IDN Web', peserta: [{nama: 'Budi'}, {nama: 'Andi'}] }], pendamping: 'Pak Purnomo' },
+  { id: 'd2', nama_lomba: 'Hackathon IoT Nusantara', tingkat: 'nasional', status_hasil: 'juara', juara_ke: 2, kategori: 'IoT', lokasi: 'Bandung', tanggal_mulai: '2025-11-05', tim: [{ nama_tim: 'Smart IoT', peserta: [{nama: 'Siti'}, {nama: 'Rina'}] }], pendamping: 'Bu Sari' },
+  { id: 'd3', nama_lomba: 'Lomba Robotika Pelajar', tingkat: 'provinsi', status_hasil: 'juara', juara_ke: 3, kategori: 'Robotika', lokasi: 'Surabaya', tanggal_mulai: '2025-08-20', tim: [{ nama_tim: 'RoboIDN', peserta: [{nama: 'Doni'}, {nama: 'Eka'}] }], pendamping: 'Pak Joko' },
+  { id: 'd4', nama_lomba: 'Olimpiade Jaringan', tingkat: 'nasional', status_hasil: 'finalis', juara_ke: null, kategori: 'Networking', lokasi: 'Online', tanggal_mulai: '2025-09-15', tim: [{ nama_tim: 'NetOps', peserta: [{nama: 'Fajar'}, {nama: 'Gilang'}] }], pendamping: 'Bu Rina' },
+  { id: 'd5', nama_lomba: 'Game Dev Challenge', tingkat: 'internasional', status_hasil: 'juara', juara_ke: 1, kategori: 'Game Dev', lokasi: 'Online', tanggal_mulai: '2025-12-01', tim: [{ nama_tim: 'PixWiz', peserta: [{nama: 'Hani'}, {nama: 'Indra'}] }], pendamping: 'Pak Agus' },
+  { id: 'd6', nama_lomba: 'Mobile App Contest', tingkat: 'provinsi', status_hasil: 'juara', juara_ke: 2, kategori: 'Android App', lokasi: 'Semarang', tanggal_mulai: '2025-07-10', tim: [{ nama_tim: 'AppCraft', peserta: [{nama: 'Joni'}, {nama: 'Kiki'}] }], pendamping: 'Pak Eko' },
 ];
+
+/* ── Lomba Showcase Card Components ── */
+
+function ShowcaseCardContent({ lomba }) {
+  const [imgErr, setImgErr] = useState(false);
+  const fotoUrl = lomba.foto?.[0];
+  const juaraColors = { 1: '#FFD700', 2: '#C0C0C0', 3: '#CD7F32' };
+  const hasMedal = lomba.tingkat === 'nasional' && lomba.status_hasil === 'juara' && lomba.juara_ke <= 3;
+
+  return (
+    <div className="s-card">
+      {lomba.juara_ke && (
+        <div className="s-card-ribbon" style={{
+          background: hasMedal ? juaraColors[lomba.juara_ke] : 'var(--grad-2, #6366f1)',
+          boxShadow: hasMedal ? `0 0 20px ${juaraColors[lomba.juara_ke]}66` : 'none',
+        }}>
+          {hasMedal ? '🏅 Juara ' + lomba.juara_ke : lomba.juara_ke}
+        </div>
+      )}
+      <div className="s-card-img-wrap">
+        {fotoUrl && !imgErr ? (
+          <a href={fotoUrl} data-fancybox="gallery" data-caption={lomba.nama_lomba} className="block w-full h-full">
+            <img
+              src={fotoUrl}
+              alt={lomba.nama_lomba}
+              className="s-card-img cursor-pointer"
+              loading="lazy"
+              onError={() => setImgErr(true)}
+            />
+          </a>
+        ) : (
+          <div className="s-card-img-placeholder">🏆</div>
+        )}
+        <div className="s-card-img-overlay" />
+      </div>
+      <div className="s-card-body">
+        <div className="s-card-badges">
+          <span className="s-badge s-badge-level">{lomba.tingkat}</span>
+          <span className="s-badge s-badge-cat">{lomba.kategori}</span>
+        </div>
+        <h4 className="s-card-title">{lomba.nama_lomba}</h4>
+        <div className="s-card-meta">
+          <span className="s-meta-item">📍 {lomba.lokasi || 'Online'}</span>
+          <span className="s-meta-item">📅 {lomba.tanggal_mulai}</span>
+        </div>
+        {lomba.tim?.length > 0 && (
+          <div className="s-card-teams">
+            {lomba.tim.slice(0, 2).map((t, ti) => (
+              <div key={ti} className="s-card-team">
+                <div className="s-team-name">{t.nama_tim}</div>
+                <div className="s-team-members">
+                  {t.peserta?.slice(0, 3).map((p, pi) => (
+                    <span key={pi} className="s-member">{p.nama}{pi < Math.min(t.peserta.length, 3) - 1 ? ',' : ''}</span>
+                  ))}
+                  {t.peserta?.length > 3 && <span className="s-member-more">+{t.peserta.length - 3}</span>}
+                </div>
+              </div>
+            ))}
+            {lomba.tim.length > 2 && <div className="s-card-more-teams">+{lomba.tim.length - 2} tim lainnya</div>}
+          </div>
+        )}
+        {lomba.pendamping && <div className="s-card-pendamping">👩‍🏫 {lomba.pendamping}</div>}
+      </div>
+    </div>
+  );
+}
+
+function ShowcaseCard({ lomba, idx }) {
+  return (
+    <div className="showcase-card showcase-fade-in" style={{ '--idx': idx, animationDelay: `${idx * 0.1}s` }}>
+      <ShowcaseCardContent lomba={lomba} />
+    </div>
+  );
+}
+
+function LombaCarousel({ lombaShowcase, ripple, onShowAll, showingAll }) {
+  const [cur, setCur] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const total = lombaShowcase.length;
+
+  useEffect(() => {
+    if (paused || total <= 4) return;
+    const timer = setInterval(() => {
+      setCur((prev) => (prev + 1) % total);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [paused, total]);
+
+  const goNext = () => setCur((prev) => (prev + 1) % total);
+  const goPrev = () => setCur((prev) => (prev - 1 + total) % total);
+
+  const visible = [];
+  for (let i = -1; i <= 2; i++) {
+    visible.push(lombaShowcase[(cur + i + total) % total]);
+  }
+
+  return (
+    <>
+      <div className="showcase-carousel"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}>
+        <button className="showcase-nav showcase-prev" onClick={goPrev} aria-label="Sebelumnya">‹</button>
+        <div className="showcase-carousel-track">
+          {visible.map((lomba, i) => {
+            let cls = 'showcase-carousel-card';
+            if (i === 1) cls += ' showcase-card-active';
+            else if (i === 0) cls += ' showcase-card-prev';
+            else cls += ' showcase-card-next';
+            return (
+              <div key={lomba.id} className={cls}
+                style={{ '--pos': i - 1, '--z': i === 1 ? 3 : Math.abs(i - 1) === 1 ? 2 : 1 }}>
+                <div className="showcase-card-inner">
+                  <ShowcaseCardContent lomba={lomba} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <button className="showcase-nav showcase-next" onClick={goNext} aria-label="Selanjutnya">›</button>
+      </div>
+      <div className="showcase-dots">
+        {lombaShowcase.map((_, i) => (
+          <button key={i}
+            className={`showcase-dot${i === cur ? ' active' : ''}`}
+            onClick={() => setCur(i)}
+            aria-label={`Slide ${i + 1}`} />
+        ))}
+      </div>
+      <div className="showcase-footer-cta">
+        <button className="cta-main btn-showcase-all" onClick={(e) => { ripple(e); onShowAll(); }}>
+          {showingAll ? 'Tutup Daftar Lomba' : '🏆 Lihat Semua Lomba'}
+        </button>
+      </div>
+    </>
+  );
+}
 
 /* ══════════════════════════════════════════════════════════════
    COMPONENT
@@ -160,8 +270,30 @@ const TESTIMONIALS = [
 export function LandingPage() {
   const { user } = useAuthStore();
   const [navScrolled, setNavScrolled] = useState(false);
+  const [idnStats, setIdnStats] = useState(null);
   const reveal = useReveal();
   const catGridRef = useCatBars();
+
+  const [lombaShowcase, setLombaShowcase] = useState([]);
+  const [showAllLomba, setShowAllLomba] = useState(false);
+
+  // Fetch IDN stats & lomba showcase
+  useEffect(() => {
+    import('@/api/axios').then(({ default: api }) => {
+      api.get('/public/idn-stats').then(({ data }) => setIdnStats(data)).catch(() => {});
+      api.get('/public/lomba-showcase').then(({ data }) => setLombaShowcase(data)).catch(() => {});
+    });
+  }, []);
+
+  // Initialize Fancybox
+  useEffect(() => {
+    Fancybox.bind("[data-fancybox]", {
+      // Optional options
+    });
+    return () => {
+      Fancybox.destroy();
+    };
+  }, []);
 
   // Nav scroll background
   useEffect(() => {
@@ -202,14 +334,18 @@ export function LandingPage() {
       <nav className={`lp-nav${navScrolled ? ' scrolled' : ''}`}>
         <Link to="/" className="lp-logo">
           <div className="logo-mark">⚡</div>
-          SKL<em>IDN</em>
+          <div className="flex flex-col">
+            <span>IPSA</span>
+            <span className="text-[8px] uppercase tracking-[0.2em] font-bold text-slate-400/80 leading-none">IDN Pamijahan Super Apps</span>
+          </div>
         </Link>
 
         <div className="nav-pill">
           <button className="on" onClick={() => scrollTo('hero')}>Beranda</button>
+          <button onClick={() => scrollTo('lomba-showcase')}>Prestasi</button>
           <button onClick={() => scrollTo('categories')}>Kategori</button>
           <button onClick={() => scrollTo('how')}>Cara Kerja</button>
-          <button onClick={() => scrollTo('testimonials')}>Testimoni</button>
+          <button onClick={() => scrollTo('testimonials')}>IDN Hebat</button>
         </div>
 
         <div className="nav-r">
@@ -243,7 +379,7 @@ export function LandingPage() {
         </h1>
 
         <p className="hero-sub">
-          SKL IDN adalah platform di mana siswa <strong>upload project teknologi</strong> mereka — Android, Website, Robotika, Game, &amp; IoT — dan mendapat validasi resmi dari guru.
+          IPSA adalah platform di mana siswa <strong>upload project teknologi</strong> mereka — Android, Website, Robotika, Game, &amp; IoT — dan mendapat validasi resmi dari guru.
         </p>
 
         <div className="hero-cta">
@@ -257,20 +393,20 @@ export function LandingPage() {
 
         <div className="hero-stats">
           <div className="hstat">
-            <CountUp target={2400} suffix="+" duration={2000} className="hstat-n" />
-            <div className="hstat-l">Total Project</div>
+            <CountUp target={idnStats?.total_students ?? 0} suffix="+" duration={2000} className="hstat-n" />
+            <div className="hstat-l">Siswa yang sudah melaksanakan</div>
           </div>
           <div className="hstat">
-            <CountUp target={890} suffix="" duration={1800} className="hstat-n" />
-            <div className="hstat-l">Siswa Aktif</div>
+            <CountUp target={idnStats?.total_schools ?? 0} suffix="" duration={1800} className="hstat-n" />
+            <div className="hstat-l">Sekolah Dikunjungi</div>
           </div>
           <div className="hstat">
-            <CountUp target={150} suffix="" duration={1600} className="hstat-n" />
-            <div className="hstat-l">Sekolah Bergabung</div>
+            <CountUp target={idnStats?.total_audience ?? 0} suffix="+" duration={1600} className="hstat-n" />
+            <div className="hstat-l">Total Audience</div>
           </div>
           <div className="hstat">
-            <CountUp target={94} suffix="%" duration={2200} className="hstat-n" />
-            <div className="hstat-l">Approval Rate</div>
+            <CountUp target={idnStats?.total_teams ?? 0} suffix="" duration={2200} className="hstat-n" />
+            <div className="hstat-l">Tim Pengajar</div>
           </div>
         </div>
       </section>
@@ -466,45 +602,98 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════ TESTIMONIALS ═══════ */}
+      {/* ═══════ IDN IMPACT ═══════ */}
       <section className="lp-social" id="testimonials">
         <div className="social-header lp-reveal" ref={reveal}>
-          <div className="section-eyebrow center">Testimoni</div>
-          <h2>Kata Mereka<br />yang Sudah Merasakan.</h2>
+          <div className="section-eyebrow center">IDN Hebat</div>
+          <h2>IDN HEBAT</h2>
         </div>
-        <div className="testi-grid lp-reveal" ref={reveal}>
-          {TESTIMONIALS.map((t, i) => (
-            <div className="tcard" key={i}>
-              <div className="tcard-top">
-                <div className="tcard-av" style={{ background: t.av.bg, color: t.av.color }}>{t.av.init}</div>
-                <div>
-                  <div className="tcard-name">{t.name}</div>
-                  <div className="tcard-role">{t.role}</div>
-                </div>
-                <div className="tcard-stars">★★★★★</div>
-              </div>
-              <p className="tcard-q">{t.q}</p>
-              <span className="tcard-tag" style={{ background: t.tag.bg, color: t.tag.color, border: t.tag.border }}>{t.tag.label}</span>
-            </div>
-          ))}
+        <div className="impact-grid lp-reveal" ref={reveal}>
+          <div className="impact-card ic-students">
+            <div className="ic-icon">👨‍🎓</div>
+            <div className="ic-n"><CountUp target={idnStats?.total_students ?? 0} suffix="" duration={2000} className="" /></div>
+            <div className="ic-l">Siswa yang sudah melaksanakan</div>
+            <div className="ic-p">Terdaftar aktif dalam program IDN Hebat</div>
+          </div>
+          <div className="impact-card ic-schools">
+            <div className="ic-icon">🏫</div>
+            <div className="ic-n"><CountUp target={idnStats?.total_schools ?? 0} suffix="" duration={1800} className="" /></div>
+            <div className="ic-l">Sekolah Dikunjungi</div>
+            <div className="ic-p">Tersebar di berbagai kota di Indonesia</div>
+          </div>
+          <div className="impact-card ic-audience">
+            <div className="ic-icon">👥</div>
+            <div className="ic-n"><CountUp target={idnStats?.total_audience ?? 0} suffix="+" duration={2200} className="" /></div>
+            <div className="ic-l">Total Audience</div>
+            <div className="ic-p">Siswa yang telah merasakan manfaat program</div>
+          </div>
+          <div className="impact-card ic-teams">
+            <div className="ic-icon">🚀</div>
+            <div className="ic-n"><CountUp target={idnStats?.total_teams ?? 0} suffix="" duration={1600} className="" /></div>
+            <div className="ic-l">Tim Pengajar</div>
+            <div className="ic-p">Tenaga pengajar yang berdedikasi tinggi</div>
+          </div>
+          <div className="impact-card ic-lomba">
+            <div className="ic-icon">🏆</div>
+            <div className="ic-n"><CountUp target={idnStats?.total_lomba ?? 0} suffix="" duration={1800} className="" /></div>
+            <div className="ic-l">Total Lomba</div>
+            <div className="ic-p">Lomba yang telah dilaksanakan</div>
+          </div>
         </div>
       </section>
 
-      {/* ═══════ CTA FINAL ═══════ */}
-      <section className="lp-cta-section">
-        <div className="cta-bg" />
-        <div className="cta-grid-line" />
-        <div className="cta-inner lp-reveal" ref={reveal}>
-          <div className="cta-eyebrow">🇮🇩 Untuk Siswa Indonesia</div>
-          <h2>
-            Mulai Tampilkan<br />
-            <span className="h1-grad">Karyamu Hari Ini.</span>
-          </h2>
-          <p className="cta-p">Bergabung bersama 890+ siswa yang sudah membuktikan kemampuan mereka. Gratis, mudah, dan langsung berdampak.</p>
-          <div className="cta-btns">
-            <Link to="/register" className="cta-main" onClick={ripple}>⚡ Daftar Gratis Sekarang</Link>
-            <button className="cta-sec" onClick={() => scrollTo('categories')}>Lihat Demo Platform →</button>
+      {/* ═══════ LOMBA SHOWCASE ═══════ */}
+      <section className="lp-lomba-showcase" id="lomba-showcase">
+        <div className="showcase-bg" />
+        <div className="showcase-inner">
+          <div className="showcase-header lp-reveal" ref={reveal}>
+            <div className="section-eyebrow center">Prestasi Siswa</div>
+            <h2>
+              Jejak Juara<br />
+              <span className="h1-grad">Siswa IDN.</span>
+            </h2>
+            <p className="showcase-sub">Setiap lomba adalah cerita perjuangan. Berikut karya dan prestasi terbaru siswa IDN Pamijahan.</p>
           </div>
+
+          {lombaShowcase.length > 0 ? (
+            lombaShowcase.length <= 4 ? (
+              <div className="lomba-showcase-grid">
+                <div className="showcase-card-grid">
+                  {lombaShowcase.map((lomba, i) => (
+                    <ShowcaseCard key={lomba.id} lomba={lomba} idx={i} />
+                  ))}
+                </div>
+                <div className="showcase-footer-cta">
+                  <button className="cta-main btn-showcase-all" onClick={(e) => { ripple(e); setShowAllLomba(!showAllLomba); }}>
+                    {showAllLomba ? 'Tutup Daftar Lomba' : '🏆 Lihat Semua Lomba'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <LombaCarousel lombaShowcase={lombaShowcase} ripple={ripple} onShowAll={() => setShowAllLomba(!showAllLomba)} showingAll={showAllLomba} />
+            )
+          ) : (
+            <div className="showcase-empty lp-reveal" ref={reveal}>
+              <div className="showcase-empty-icon">🏆</div>
+              <h3>Belum Ada Data Lomba Asli</h3>
+              <p>Data prestasi siswa akan tampil di sini setelah lomba dicatat. Berikut adalah data dummy:</p>
+              <div className="mt-6">
+                <button className="cta-main" onClick={(e) => { ripple(e); setShowAllLomba(!showAllLomba); }}>
+                  {showAllLomba ? 'Tutup Daftar Lomba' : '🏆 Lihat Semua Lomba (Dummy)'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {showAllLomba && (
+            <div className="mt-12 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+                {DUMMY_LOMBA.map((lomba, i) => (
+                  <ShowcaseCard key={lomba.id} lomba={lomba} idx={i} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -514,7 +703,10 @@ export function LandingPage() {
           <div className="foot-brand">
             <Link to="/" className="lp-logo">
               <div className="logo-mark">⚡</div>
-              SKL<em>IDN</em>
+              <div className="flex flex-col">
+                <span>IPSA</span>
+                <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-slate-400/60 leading-none">IDN Pamijahan Super Apps</span>
+              </div>
             </Link>
             <p className="foot-desc">Platform showcase project teknologi siswa SMK Indonesia. Upload, validasi, dan buktikan kemampuanmu kepada dunia.</p>
           </div>
@@ -533,14 +725,14 @@ export function LandingPage() {
           </div>
           <div className="foot-col">
             <h5>Lainnya</h5>
-            <a href="#" onClick={(e) => e.preventDefault()}>Tentang SKL IDN</a>
+            <a href="#" onClick={(e) => e.preventDefault()}>Tentang IPSA</a>
             <a href="#" onClick={(e) => e.preventDefault()}>Panduan Upload</a>
             <a href="#" onClick={(e) => e.preventDefault()}>Kebijakan Privasi</a>
             <a href="#" onClick={(e) => e.preventDefault()}>Hubungi Kami</a>
           </div>
         </div>
         <div className="foot-bottom">
-          <div className="foot-copy">© 2025 SKL IDN. Dibuat dengan ❤️ untuk siswa Indonesia 🇮🇩</div>
+          <div className="foot-copy">© 2025 IPSA. Dibuat dengan ❤️ untuk siswa Indonesia 🇮🇩</div>
           <div className="foot-badges">
             <span className="foot-badge">v1.0.0</span>
             <span className="foot-badge">MIT License</span>

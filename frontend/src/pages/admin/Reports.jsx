@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { adminApi } from '@/api/adminApi';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/common/Card';
+import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { 
   Download, FileSpreadsheet, Loader2, 
@@ -53,7 +54,8 @@ export function Reports() {
       
       toast.success('File Excel berhasil diunduh');
     } catch (error) {
-      toast.error('Gagal mengekspor laporan');
+      const msg = error?.response?.data?.message || error?.message || 'Gagal mengekspor laporan';
+      toast.error(msg);
       console.error(error);
     } finally {
       setDownloading(false);

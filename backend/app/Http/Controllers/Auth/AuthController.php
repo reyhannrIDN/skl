@@ -303,6 +303,65 @@ class AuthController extends Controller
         return response()->json(['message' => 'Password berhasil diubah']);
     }
 
+    public function getLockSettings(Request $request)
+    {
+        $user = $request->user();
+        return response()->json([
+            'lock_enabled' => (bool) $user->lock_enabled,
+            'lock_type' => $user->lock_type,
+        ]);
+    }
+
+    public function updateLockSettings(Request $request)
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'lock_enabled' => 'boolean',
+            'lock_type' => 'required_if:lock_enabled,true|string|in:pin,pattern',
+            'lock_code' => 'required_if:lock_enabled,true|string|min:3|max:32',
+        ]);
+
+        if ($request->lock_enabled) {
+            $user->lock_enabled = true;
+            $user->lock_type = $request->lock_type;
+            $user->lock_code = bcrypt($request->lock_code);
+        } else {
+            $user->lock_enabled = false;
+            $user->lock_type = null;
+            $user->lock_code = null;
+        }
+
+        $user->save();
+
+        NotificationService::logActivity('update_lock_settings', 'Lock settings updated');
+
+        return response()->json([
+            'message' => 'Pengaturan kunci berhasil diperbarui',
+            'lock_enabled' => (bool) $user->lock_enabled,
+            'lock_type' => $user->lock_type,
+        ]);
+    }
+
+    public function verifyLock(Request $request)
+    {
+        $request->validate([
+            'lock_code' => 'required|string',
+        ]);
+
+        $user = $request->user();
+
+        if (!$user->lock_enabled || !$user->lock_code) {
+            return response()->json(['message' => 'Kunci aplikasi tidak aktif'], 400);
+        }
+
+        if (!Hash::check($request->lock_code, $user->lock_code)) {
+            return response()->json(['message' => 'Kode kunci salah'], 422);
+        }
+
+        return response()->json(['message' => 'Verifikasi berhasil', 'verified' => true]);
+    }
+
     public function systemInfo()
     {
         return response()->json([

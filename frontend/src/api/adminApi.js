@@ -1,5 +1,9 @@
 import api from './axios';
 
+const downloadBackup = (filename) => api.get(`/admin/backups/${filename}/download`, {
+  responseType: 'blob',
+});
+
 export const adminApi = {
   // User Management
   getUsers: (params) => api.get('/admin/users', { params }),
@@ -31,4 +35,21 @@ export const adminApi = {
   updateClass: (id, data) => api.put(`/admin/classes/${id}`, data),
   deleteClass: (id) => api.delete(`/admin/classes/${id}`),
   getEligibleTeachers: () => api.get('/admin/eligible-teachers'),
+
+  // Backup Management
+  getBackups: () => api.get('/admin/backups'),
+  createBackup: () => api.post('/admin/backups', {}, { skipErrorRedirect: true }),
+  downloadBackup,
+  restoreBackup: (filename, data) => api.post(`/admin/backups/${filename}/restore`, data, { skipErrorRedirect: true }),
+  restoreBackupFromUpload: (formData) => api.post('/admin/backups/restore-upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    skipErrorRedirect: true,
+  }),
+  deleteBackup: (filename) => api.delete(`/admin/backups/${filename}`),
+  getBackupSchedule: () => api.get('/admin/backups/schedule'),
+  updateBackupSchedule: (data) => api.put('/admin/backups/schedule', data),
+
+  // Permissions
+  getPermissions: (params) => api.get('/admin/permissions', { params }),
+  updateUserPermissions: (id, data) => api.put(`/admin/permissions/${id}`, data),
 };

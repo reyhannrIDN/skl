@@ -182,7 +182,7 @@ class SubmissionController extends Controller
         if ($submission->user_id !== $request->user()->id) {
             abort(403);
         }
-        $submission->load(['files', 'checklistReviews.guru:id,name', 'reviewer:id,name', 'user:id,name,kelas,nis']);
+        $submission->load(['files.requirement', 'checklistReviews.guru:id,name', 'reviewer:id,name', 'user:id,name,kelas,nis']);
 
         return response()->json(['submission' => $submission]);
     }

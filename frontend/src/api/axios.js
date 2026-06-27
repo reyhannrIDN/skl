@@ -15,8 +15,8 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  withCredentials: true,
-  withXSRFToken: true,
+  withCredentials: false,
+  withXSRFToken: false,
 });
 
 api.interceptors.request.use(
@@ -24,6 +24,9 @@ api.interceptors.request.use(
     const token = inMemoryToken || localStorage.getItem('token');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
     }
     return config;
   },

@@ -36,9 +36,10 @@ export function ProtectedRoute({ allowedRoles }) {
             
             <div className="flex flex-col items-center gap-2 text-center mt-2">
                <h2 className="text-2xl md:text-3xl font-black font-display tracking-tight text-slate-800 dark:text-white">
-                 SKL <span className="text-indigo-600 dark:text-indigo-400">IDN</span>
-               </h2>
-               <div className="flex items-center gap-2 mt-1">
+                   IPSA
+                </h2>
+                <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400/60">IDN Pamijahan Super Apps</div>
+                <div className="flex items-center gap-2 mt-1">
                   <div className="w-3.5 h-3.5 rounded-full border-[2.5px] border-indigo-600/30 border-t-indigo-600 dark:border-indigo-400/30 dark:border-t-indigo-400 animate-spin"></div>
                   <p className="text-slate-500 dark:text-slate-400 font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] animate-pulse">
                     Mempersiapkan Sesi...
@@ -68,6 +69,7 @@ export function ProtectedRoute({ allowedRoles }) {
       case 'superadmin': return <Navigate to="/admin/dashboard" replace />;
       case 'guru': return <Navigate to="/guru/dashboard" replace />;
       case 'siswa': return <Navigate to="/siswa/dashboard" replace />;
+      case 'idn': return <Navigate to="/idn/dashboard" replace />;
       default: return <Navigate to="/login" replace />;
     }
   }

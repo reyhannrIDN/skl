@@ -132,15 +132,61 @@ export function SubmissionDetail() {
                 </div>
               </div>
 
-              {/* Revision Notes if any */}
-              {submission.status === 'revision' && submission.catatan_guru && (
-                 <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-                   <h4 className="flex items-center gap-2 text-destructive font-semibold mb-2">
-                     <AlertCircle className="w-5 h-5" /> Catatan Revisi dari Pembimbing
-                   </h4>
-                   <p className="text-sm">{submission.catatan_guru}</p>
-                 </div>
-              )}
+              {/* Revisions & Feedback */}
+               {(submission.catatan_guru || submission.checklistReviews?.some(r => r.status === 'rejected')) && (
+                  <div className="p-5 bg-destructive/10 border border-destructive/20 rounded-xl space-y-4">
+                     <h4 className="flex items-center gap-2 text-destructive font-bold text-sm uppercase tracking-wider">
+                        <AlertCircle className="w-5 h-5" /> Revisi &amp; Feedback
+                     </h4>
+
+                     {/* Rejected checklist items */}
+                     {submission.checklistReviews?.filter(r => r.status === 'rejected').length > 0 && (
+                        <div className="space-y-3">
+                           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                              {submission.checklistReviews.filter(r => r.status === 'rejected').length === 1
+                                ? 'Item yang perlu diperbaiki:'
+                                : 'Item yang perlu diperbaiki:'}
+                           </p>
+                           {submission.checklistReviews.filter(r => r.status === 'rejected').map(r => {
+                              const relatedFiles = submission.files?.filter(f => f.requirement?.label === r.checklist_item) || [];
+                              return (
+                                 <div key={r.id} className="bg-background/50 border border-destructive/10 rounded-lg p-3 space-y-2">
+                                    <div className="flex items-start gap-2">
+                                       <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+                                       <div>
+                                          <span className="text-sm font-semibold">{r.checklist_item}</span>
+                                          {r.catatan && <p className="text-xs text-muted-foreground italic mt-0.5">Feedback: {r.catatan}</p>}
+                                       </div>
+                                    </div>
+                                    {relatedFiles.length > 0 && (
+                                       <div className="flex flex-wrap gap-1.5 pl-6">
+                                          {relatedFiles.map(f => (
+                                             <button
+                                                key={f.id}
+                                                onClick={() => window.open(f.file_url || f.link_url, '_blank')}
+                                                className="inline-flex items-center gap-1 px-2 py-0.5 bg-destructive/10 hover:bg-destructive/20 text-destructive text-[10px] font-bold uppercase tracking-wider rounded-md transition-colors"
+                                             >
+                                                <Eye className="w-3 h-3" />
+                                                {f.file_name || f.requirement?.label}
+                                             </button>
+                                          ))}
+                                       </div>
+                                    )}
+                                 </div>
+                              );
+                           })}
+                        </div>
+                     )}
+
+                     {/* General teacher notes */}
+                     {submission.catatan_guru && (
+                        <div className="bg-background/50 border border-destructive/10 rounded-lg p-3.5">
+                           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Catatan Pembimbing:</p>
+                           <p className="text-sm whitespace-pre-wrap">{submission.catatan_guru}</p>
+                        </div>
+                     )}
+                  </div>
+               )}
             </CardContent>
           </Card>
 
