@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { Label } from '@/components/common/Label';
+import { CaptchaModal } from '@/components/common/CaptchaModal';
 import { GoogleLogin } from '@react-oauth/google';
 import { Loader2, Sparkles, ChevronRight, Eye, EyeOff, Check, X, Mail, User, BookOpen, Hash, Calendar, Lock, ArrowLeft, Trophy, Users, Shield } from 'lucide-react';
 
@@ -62,8 +63,10 @@ export function RegisterPage() {
   const [honeypot, setHoneypot] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showCaptcha, setShowCaptcha] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
   const [password, setPassword] = useState('');
+  const [pendingData, setPendingData] = useState(null);
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
 
@@ -92,9 +95,16 @@ export function RegisterPage() {
       toast.error('Aktivitas mencurigakan terdeteksi.');
       return;
     }
+    setPendingData(data);
+    setShowCaptcha(true);
+  };
+
+  const handleCaptchaVerified = async () => {
+    setShowCaptcha(false);
     setIsLoading(true);
+
     try {
-      const payload = { ...data, role: 'siswa' };
+      const payload = { ...pendingData, role: 'siswa' };
       const response = await authApi.register(payload);
       const { user, token, message } = response.data;
       if (token) {
@@ -109,6 +119,7 @@ export function RegisterPage() {
       toast.error(error.response?.data?.message || 'Registrasi gagal, periksa isian form anda');
     } finally {
       setIsLoading(false);
+      setPendingData(null);
     }
   };
 
@@ -401,6 +412,13 @@ export function RegisterPage() {
 
         </div>
       </div>
+
+      {showCaptcha && (
+        <CaptchaModal
+          onVerified={handleCaptchaVerified}
+          onClose={() => { setShowCaptcha(false); setPendingData(null); }}
+        />
+      )}
     </div>
   );
 }

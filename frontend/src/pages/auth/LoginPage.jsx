@@ -1,8 +1,9 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { authApi } from '@/api/endpoints';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { CaptchaModal } from '@/components/common/CaptchaModal';
 import { useGoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
 import './LoginPage.css';
@@ -30,65 +31,26 @@ function getDashboardPath(role) {
    LOGIN PAGE COMPONENT
    ══════════════════════════════════════════════ */
 export function LoginPage() {
-  const { setAuth } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
-
+  const setAuth = useAuthStore((state) => state.setAuth);
+  
+  const [isLoading, setIsLoading] = useState(false);
   const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [honeypot, setHoneypot] = useState(''); // Anti-bot Honeypot
-
+  const [honeypot, setHoneypot] = useState('');
+  
+  // Local states for captcha & UI
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [pendingGoogleToken, setPendingGoogleToken] = useState(null);
   const [errMsg, setErrMsg] = useState('');
   const [okMsg, setOkMsg] = useState('');
   const [idErr, setIdErr] = useState(false);
   const [pwErr, setPwErr] = useState(false);
 
   const rd = LOGIN_CONFIG;
-
-  /* ── reCAPTCHA v3 ── */
-  const executeCaptcha = async (action = 'login') => {
-    if (!window.grecaptcha) {
-      await new Promise(r => {
-        let i = 0;
-        const iv = setInterval(() => {
-          if (window.grecaptcha || ++i > 60) { clearInterval(iv); r(); }
-        }, 100);
-      });
-    }
-    if (!window.grecaptcha) { console.warn('grecaptcha not available'); return ''; }
-    try {
-      const token = await new Promise((resolve, reject) => {
-        window.grecaptcha.ready(async () => {
-          try {
-            const t = await window.grecaptcha.execute(
-              import.meta.env.VITE_RECAPTCHA_SITE_KEY, { action }
-            );
-            resolve(t);
-          } catch (err) {
-            reject(err);
-          }
-        });
-        setTimeout(() => reject(new Error('timeout')), 10000);
-      });
-      return token;
-    } catch (e) {
-      console.warn('reCAPTCHA v3 failed, proceeding without:', e.message);
-      return '';
-    }
-  };
-
-  useEffect(() => {
-    const src = 'https://www.google.com/recaptcha/api.js?render=' + import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-    if (!document.querySelector('script[src^="https://www.google.com/recaptcha/api.js"]')) {
-      const s = document.createElement('script');
-      s.src = src;
-      document.head.appendChild(s);
-    }
-  }, []);
 
   /* Clear messages */
   const clearMsgs = useCallback(() => {
@@ -114,20 +76,49 @@ export function LoginPage() {
       return;
     }
 
+    // Show captcha modal for verification
+    setShowCaptcha(true);
+  };
+
+  const handleCaptchaVerified = async () => {
+    setShowCaptcha(false);
     setIsLoading(true);
 
-    const token = await executeCaptcha('login');
+    if (pendingGoogleToken) {
+      try {
+        const response = await authApi.googleLogin({ 
+          token: pendingGoogleToken.access_token 
+        });
+        
+        const { user, access_token, message } = response.data;
+        
+        if (access_token) {
+          setAuth(user, access_token);
+          toast.success(message || 'Login berhasil');
+          window.location.href = getDashboardPath(user.role);
+        } else {
+          setOkMsg(message);
+          toast.success(message, { duration: 6000 });
+        }
+      } catch (error) {
+        const msg = error.response?.data?.message || 'Gagal login dengan Google.';
+        setErrMsg(msg);
+        toast.error(msg);
+      } finally {
+        setIsLoading(false);
+        setPendingGoogleToken(null);
+      }
+      return;
+    }
 
     try {
-      const response = await authApi.login({ email: identity.trim(), password, captcha_token: token || '' });
+      const response = await authApi.login({ email: identity.trim(), password });
       const { user, access_token, message } = response.data;
       
-      // Update global store
       setAuth(user, access_token);
       
       toast.success(message || 'Login berhasil');
       
-      // Navigate immediately using window.location for a clean state
       window.location.href = getDashboardPath(user.role);
     } catch (error) {
       const msg = error.response?.data?.message || 'Kredensial tidak valid. Periksa kembali dan coba lagi.';
@@ -141,32 +132,8 @@ export function LoginPage() {
 
   /* Google Success Handler */
   const handleGoogleLoginSuccess = async (tokenResponse) => {
-    setIsLoading(true);
-    clearMsgs();
-    try {
-      // With useGoogleLogin, we get an access_token, not a GSI credential string by default
-      // Unless we use 'auth-code' flow. Let's use the simplest flow.
-      const response = await authApi.googleLogin({ 
-        token: tokenResponse.access_token 
-      });
-      
-      const { user, access_token, message } = response.data;
-      
-      if (access_token) {
-        setAuth(user, access_token);
-        toast.success(message || 'Login berhasil');
-        window.location.href = getDashboardPath(user.role);
-      } else {
-        setOkMsg(message);
-        toast.success(message, { duration: 6000 });
-      }
-    } catch (error) {
-      const msg = error.response?.data?.message || 'Gagal login dengan Google.';
-      setErrMsg(msg);
-      toast.error(msg);
-    } finally {
-      setIsLoading(false);
-    }
+    setPendingGoogleToken(tokenResponse);
+    setShowCaptcha(true);
   };
 
   /* Custom Google Login Hook */
@@ -367,7 +334,16 @@ export function LoginPage() {
           <p className="reg">Belum punya akun? <Link to="/register">Daftar Gratis →</Link></p>
         </div>
       </div>
+
+      {showCaptcha && (
+        <CaptchaModal
+          onVerified={handleCaptchaVerified}
+          onClose={() => {
+            setShowCaptcha(false);
+            setPendingGoogleToken(null);
+          }}
+        />
+      )}
     </div>
   );
 }
-

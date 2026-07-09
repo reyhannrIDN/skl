@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 27, 2026 at 01:18 PM
+-- Generation Time: Jul 09, 2026 at 04:17 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.21
 
@@ -274,7 +274,15 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `description`, `ip_addre
 (230, 4, 'login', 'User logged in', '127.0.0.1', 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', '2026-06-27 06:05:25'),
 (231, 4, 'logout', 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-27 06:09:50'),
 (232, 12, 'login', 'User logged in', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-27 06:10:09'),
-(233, 12, 'logout', 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-27 06:10:32');
+(233, 12, 'logout', 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-27 06:10:32'),
+(234, 1, 'login', 'User logged in', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-30 03:56:00'),
+(235, 1, 'logout', 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-30 03:57:17'),
+(236, 9, 'login_google', 'User logged in via Google', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-30 03:57:23'),
+(237, 9, 'logout', 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-30 03:57:25'),
+(238, 9, 'login_google', 'User logged in via Google', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-30 04:01:39'),
+(239, 9, 'logout', 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-30 04:01:44'),
+(240, 9, 'login_google', 'User logged in via Google', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-30 09:46:36'),
+(241, 9, 'logout', 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-30 09:46:54');
 
 -- --------------------------------------------------------
 
@@ -1001,7 +1009,11 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (225, 'App\\Models\\User', 9, 'refresh-token', 'ee41454d81d9194b8570b5ddf4c5f8a45dad39c2a5794d971e622a0d6ab83d4d', '[\"refresh\"]', NULL, '2026-07-04 05:56:35', '2026-06-27 05:56:35', '2026-06-27 05:56:35'),
 (227, 'App\\Models\\User', 4, 'refresh-token', '74494daf6814a3e8f939eeee94cc9af20b7d5579c77a3732238f965be0c61fc6', '[\"refresh\"]', NULL, '2026-07-04 05:59:39', '2026-06-27 05:59:39', '2026-06-27 05:59:39'),
 (229, 'App\\Models\\User', 4, 'refresh-token', 'bd232f98c2326c13ca7eced34f2e2e0f0984ebf3c7f8d2914bd2da85bc8d6100', '[\"refresh\"]', NULL, '2026-07-04 06:05:25', '2026-06-27 06:05:25', '2026-06-27 06:05:25'),
-(231, 'App\\Models\\User', 12, 'refresh-token', '082e5f281d399639cee9bc484a26da195339f81270c796cd7dcf189158b6c70b', '[\"refresh\"]', NULL, '2026-07-04 06:10:09', '2026-06-27 06:10:09', '2026-06-27 06:10:09');
+(231, 'App\\Models\\User', 12, 'refresh-token', '082e5f281d399639cee9bc484a26da195339f81270c796cd7dcf189158b6c70b', '[\"refresh\"]', NULL, '2026-07-04 06:10:09', '2026-06-27 06:10:09', '2026-06-27 06:10:09'),
+(233, 'App\\Models\\User', 1, 'refresh-token', '7af840e767dcefff13f97ea03815896868b5139a20c9f94a58be4b07087c9fc0', '[\"refresh\"]', NULL, '2026-07-07 03:56:00', '2026-06-30 03:56:00', '2026-06-30 03:56:00'),
+(235, 'App\\Models\\User', 9, 'refresh-token', 'deda022656cfca6098510372f2d995e51f239ca670cbf978f34fb1ca203342aa', '[\"refresh\"]', NULL, '2026-07-07 03:57:23', '2026-06-30 03:57:23', '2026-06-30 03:57:23'),
+(237, 'App\\Models\\User', 9, 'refresh-token', '260eec94a3405dec4618651f1f98cf16092008052c2840c381c6b209b278a63b', '[\"refresh\"]', NULL, '2026-07-07 04:01:39', '2026-06-30 04:01:39', '2026-06-30 04:01:39'),
+(239, 'App\\Models\\User', 9, 'refresh-token', 'a5db5c59e3462391d24a4c1f014a3b92764f27c766c818dfd6cde3f4d6ba891f', '[\"refresh\"]', NULL, '2026-07-07 09:46:36', '2026-06-30 09:46:36', '2026-06-30 09:46:36');
 
 -- --------------------------------------------------------
 
@@ -1319,7 +1331,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `google_id`, `email_verified_at`, `password`, `role`, `specialty`, `nis`, `nip`, `kelas`, `angkatan`, `phone`, `avatar`, `is_active`, `permissions`, `last_activity_at`, `remember_token`, `created_at`, `updated_at`, `lock_enabled`, `lock_type`, `lock_code`) VALUES
-(1, 'Admin SKL', 'admin@skl.test', NULL, NULL, '$2y$12$n1g00AIwihth0z4Csu4F6eBbfAnIuXDFizNKQEGQrrN6gG3A5OSOq', 'superadmin', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-06-27 05:56:27', NULL, '2026-04-12 23:27:36', '2026-06-27 05:56:27', 1, 'pattern', '$2y$12$v8/3AByisbjSBg1LkUB7Pu/SfHZIha56aHyzdxL0h3Efgaay2VZTq'),
+(1, 'Admin SKL', 'admin@skl.test', NULL, NULL, '$2y$12$n1g00AIwihth0z4Csu4F6eBbfAnIuXDFizNKQEGQrrN6gG3A5OSOq', 'superadmin', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-06-30 03:57:11', NULL, '2026-04-12 23:27:36', '2026-06-30 03:57:11', 1, 'pattern', '$2y$12$v8/3AByisbjSBg1LkUB7Pu/SfHZIha56aHyzdxL0h3Efgaay2VZTq'),
 (2, 'Pak Budi Santoso', 'guru@skl.test', NULL, NULL, '$2y$12$NEtlCfl7XwYIs3tWUsyuD.vh4/be97ZR/IF65s8YedHIch.vbOKmi', 'guru', 'IT', NULL, '198501012010011001', NULL, NULL, NULL, NULL, 1, NULL, '2026-06-16 23:25:27', NULL, '2026-04-12 23:27:36', '2026-06-16 23:25:27', 0, NULL, NULL),
 (3, 'Bu Siti Rahayu', 'guru2@skl.test', NULL, NULL, '$2y$12$mWd3pwcmf/ivnhnU48HCkO0oSJybQ7fs93sgV4RLD86Dgq8BrkzBe', 'guru', NULL, NULL, '198702032012012002', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, '2026-04-12 23:27:37', '2026-04-12 23:27:37', 0, NULL, NULL),
 (4, 'Ahmad Fauzi', 'siswa@skl.test', NULL, NULL, '$2y$12$ncVh9lfqkaH3u4iDs0UAoepEIT3tGGCyjuZSwykmp4cCK.bG.y5V6', 'siswa', NULL, '2024001', NULL, '9', 2024, NULL, NULL, 1, NULL, '2026-06-27 06:09:20', NULL, '2026-04-12 23:27:37', '2026-06-27 06:09:20', 1, 'pin', '$2y$12$uyIPNVE9PS5eM5qggcd1quZ3Hb0/PRV7irjpIEf7PkT6RkHwXFUau'),
@@ -1327,7 +1339,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `google_id`, `email_verified_at`, `p
 (6, 'Budi Prakoso', 'siswa3@skl.test', NULL, NULL, '$2y$12$RcKhZBfxIWr2yZ6tywA7RO8lxtIVBC.UHXb7eyPTs.6m/GoTbWRde', 'siswa', NULL, '2024003', NULL, '7', 2024, NULL, NULL, 1, NULL, NULL, NULL, '2026-04-12 23:27:38', '2026-04-12 23:27:38', 0, NULL, NULL),
 (7, 'Dewi Lestari', 'siswa4@skl.test', NULL, NULL, '$2y$12$54AubDpRp37ULY7VmBA6/eNHyZoxsDUxgnBBROE8N2OCASIv3VmWu', 'siswa', NULL, '2024004', NULL, '7', 2024, NULL, NULL, 1, NULL, NULL, NULL, '2026-04-12 23:27:39', '2026-04-29 00:50:42', 0, NULL, NULL),
 (8, 'Rizky Ramadhan', 'siswa5@skl.test', NULL, NULL, '$2y$12$XorePX/DJlIBSyqo/fOKsuusO345xYzkwBSpIspdHgAHEvyD1S7Ga', 'siswa', NULL, '2024005', NULL, '8', 2024, NULL, NULL, 1, NULL, NULL, NULL, '2026-04-12 23:27:39', '2026-04-12 23:27:39', 0, NULL, NULL),
-(9, 'Reyhan Nazera Rusmana', 'reyhannr@idn.sch.id', '102613613208803604227', NULL, '$2y$12$Zt9qZpQDUAE4uD18dMV3Q.6DTZLNxv2QiHaUPHQfI0QjPmTvmgCp6', 'guru', NULL, NULL, NULL, NULL, NULL, NULL, 'https://lh3.googleusercontent.com/a/ACg8ocKG8hll-9BlCA9FO58Zx5G8FTr9jiMWCv8jHU4NWmmfCGbU-A=s96-c', 1, NULL, '2026-06-27 05:58:36', NULL, '2026-04-29 00:23:51', '2026-06-27 05:58:36', 0, NULL, NULL),
+(9, 'Reyhan Nazera Rusmana', 'reyhannr@idn.sch.id', '102613613208803604227', NULL, '$2y$12$Zt9qZpQDUAE4uD18dMV3Q.6DTZLNxv2QiHaUPHQfI0QjPmTvmgCp6', 'guru', NULL, NULL, NULL, NULL, NULL, NULL, 'https://lh3.googleusercontent.com/a/ACg8ocKG8hll-9BlCA9FO58Zx5G8FTr9jiMWCv8jHU4NWmmfCGbU-A=s96-c', 1, NULL, '2026-06-30 09:46:36', NULL, '2026-04-29 00:23:51', '2026-06-30 09:46:36', 0, NULL, NULL),
 (10, 'Qoerbanesia', 'qoerbanesia@gmail.com', '100488923677968035628', NULL, '$2y$12$fyY/2kxxHw/CLNDaDgn7OeeLVCi11t6Kj1WY1Bd4DzOjicXXqc/Fu', 'siswa', NULL, NULL, NULL, NULL, NULL, NULL, 'https://lh3.googleusercontent.com/a/ACg8ocIfKKeQzfooJ0a0glQmnuqZ1a8-tINsE3At84AOZWPz4PGpqHY=s96-c', 0, NULL, NULL, NULL, '2026-04-29 06:27:28', '2026-06-16 23:10:30', 0, NULL, NULL),
 (12, 'Admin IDN', 'admin@idnbogor.id', NULL, NULL, '$2y$12$QaIf4YOsnH3kM0trvvVQEuZQCmFITNpfUd03qAepTsN2W6XG5mlKu', 'idn', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '{\"dashboard\": [\"view\"]}', '2026-06-27 06:10:09', NULL, '2026-06-16 23:46:56', '2026-06-27 06:10:09', 0, NULL, NULL),
 (13, 'Reyhan Nazera Rusmana', 'reyhannr.xmia6@gmail.com', '112214477551622746120', NULL, '$2y$12$x0qL6zzTkrr70YsxhmPJ9uEl7RqmfEeq.Rrnms08SWUIp8iV8tRVG', 'siswa', NULL, NULL, NULL, NULL, NULL, NULL, 'https://lh3.googleusercontent.com/a/ACg8ocIQKsm2XzwlO3HirMSzBk-W4Gt_4P4-ipG-_UQIAT2uC7XnQHYc=s96-c', 1, NULL, NULL, NULL, '2026-06-26 07:55:23', '2026-06-27 05:24:15', 0, NULL, NULL);
@@ -1586,7 +1598,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=234;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=242;
 
 --
 -- AUTO_INCREMENT for table `chat_groups`
@@ -1688,7 +1700,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=232;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=240;
 
 --
 -- AUTO_INCREMENT for table `project_categories`
