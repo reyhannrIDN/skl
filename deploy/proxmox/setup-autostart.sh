@@ -196,15 +196,19 @@ fi
 
 # Selalu hapus dan buat ulang database (fresh import setiap deploy)
 warn "Menghapus database '$DB_NAME' jika ada, lalu membuat ulang..."
-mysql --defaults-extra-file=<(printf '[client]\nuser=root\n') 2>/dev/null <<SQL || \
-mysql -u root 2>/dev/null <<SQL
+SQL_SCRIPT="/tmp/sklidn_db_setup.sql"
+cat > "$SQL_SCRIPT" <<SQLEOF
 DROP DATABASE IF EXISTS \`${DB_NAME}\`;
 CREATE DATABASE \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS '${DB_USER}'@'127.0.0.1' IDENTIFIED BY '${DB_PASS}';
 ALTER USER '${DB_USER}'@'127.0.0.1' IDENTIFIED BY '${DB_PASS}';
 GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'127.0.0.1';
 FLUSH PRIVILEGES;
-SQL
+SQLEOF
+
+mysql --defaults-extra-file=<(printf '[client]\nuser=root\n') 2>/dev/null < "$SQL_SCRIPT" || \
+mysql -u root 2>/dev/null < "$SQL_SCRIPT"
+rm -f "$SQL_SCRIPT"
 log "Database '$DB_NAME' di-drop dan dibuat ulang. User '$DB_USER' siap."
 
 # ── 4. Konfigurasi Backend (.env) ───────────────────────────
